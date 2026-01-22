@@ -65,7 +65,10 @@
             min-height:120px;
         }
         .scene:hover{ transform: translateY(-2px); filter: brightness(1.02); }
-        .scene.selected{ outline: 3px solid rgba(163, 92, 255, 0.55); }
+        .scene.selected{
+            outline: 3px solid #a35cff;
+            background: #f4ecff;
+        }
 
         .scene-title{
             font-weight:800;
@@ -81,6 +84,7 @@
             flex-wrap:wrap;
             margin-top:14px;
             align-items:center;
+            min-height: 50px; /* Platzhalter damit es nicht springt */
         }
 
         button{
@@ -92,9 +96,19 @@
             background: linear-gradient(135deg, #a35cff, #6a22cc);
             color:white;
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
-            transition: filter 0.12s ease, transform 0.12s ease;
+            transition: all 0.2s ease;
+            opacity: 0.5; /* Default: Disabled look until selection */
+            pointer-events: none;
         }
-        button:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+        /* Wenn aktiv (Klasse wird per JS gesetzt) */
+        button.active-btn {
+            opacity: 1;
+            pointer-events: all;
+        }
+        button.active-btn:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+
+        /* Reset Button immer aktiv */
+        #btnReset { opacity: 1; pointer-events: all; background: #eee; color: #4a1c7a; }
 
         .zones{
             margin-top:14px;
@@ -127,7 +141,9 @@
             font-size:13px;
             line-height:1.35;
             cursor:pointer;
+            transition: opacity 0.2s;
         }
+        .placed:hover { opacity: 0.7; text-decoration: line-through; }
 
         .hint{ margin-top:10px; font-size:13px; opacity:0.85; }
 
@@ -169,7 +185,7 @@
         </div>
 
         <h2>⚠️ Mateos Aufgabe – Szenen zuordnen</h2>
-        <p>Klicke eine Szene an und ordne sie zu: <b>Echt</b>, <b>KI</b> oder <b>Manipulativ</b>. Klick auf zugeordnete Karte = löschen.</p>
+        <p>1. Wähle oben eine Szene aus.<br>2. Entscheide unten: Ist das echt, KI oder Manipulation?</p>
 
         <div class="scene-grid">
             <div class="scene" data-id="1">
@@ -187,9 +203,9 @@
         </div>
 
         <div class="toolbar">
-            <button id="btnEcht" type="button">✔ Echt</button>
-            <button id="btnKI" type="button">🤖 KI-generiert</button>
-            <button id="btnManip" type="button">⚠️ Manipulativ</button>
+            <button id="btnEcht" type="button">✔ Ist Echt</button>
+            <button id="btnKI" type="button">🤖 Ist KI-generiert</button>
+            <button id="btnManip" type="button">⚠️ Ist Manipulativ</button>
             <button id="btnReset" type="button">🗑️ Reset</button>
         </div>
 
@@ -207,8 +223,6 @@
                 <div id="zoneManip"></div>
             </div>
         </div>
-
-        <div class="hint">Prototyp: In echt wären das Antwortkarten. Hier ist es Klick → Zuordnen.</div>
 
         <div class="row">
             <a class="btn secondary" href="mateo.html">← Zurück</a>
@@ -228,11 +242,23 @@
     const btnManip = document.getElementById("btnManip");
     const btnReset = document.getElementById("btnReset");
 
+    // Array für einfacheres Handling
+    const actionButtons = [btnEcht, btnKI, btnManip];
+
     let selectedScene = null;
 
     function clearSelection(){
         scenes.forEach(s => s.classList.remove("selected"));
         selectedScene = null;
+
+        // Buttons deaktivieren und Text zurücksetzen
+        actionButtons.forEach(b => {
+            b.classList.remove("active-btn");
+            // Original-Texte wiederherstellen (kurz)
+            if(b.id === "btnEcht") b.textContent = "✔ Ist Echt";
+            if(b.id === "btnKI") b.textContent = "🤖 Ist KI-generiert";
+            if(b.id === "btnManip") b.textContent = "⚠️ Ist Manipulativ";
+        });
     }
 
     scenes.forEach(scene => {
@@ -240,6 +266,16 @@
             scenes.forEach(s => s.classList.remove("selected"));
             scene.classList.add("selected");
             selectedScene = scene;
+
+            // --- VERBESSERUNG: PRAGMATIK & MAPPING ---
+            // Buttons aktivieren und Text anpassen, damit der Bezug klar ist
+            const title = scene.querySelector(".scene-title").textContent.split("·")[0].trim(); // nur "Szene X"
+
+            actionButtons.forEach(b => b.classList.add("active-btn"));
+            btnEcht.textContent = `✔ ${title} ist Echt`;
+            btnKI.textContent = `🤖 ${title} ist KI`;
+            btnManip.textContent = `⚠️ ${title} ist Manipulativ`;
+            // -----------------------------------------
         });
     });
 
@@ -252,8 +288,9 @@
         const item = document.createElement("div");
         item.className = "placed";
         item.innerHTML = "<b>" + title + "</b><br>" + text;
+        item.title = "Klicken zum Entfernen";
 
-        item.addEventListener("click", () => item.remove()); // Undo
+        item.addEventListener("click", () => item.remove()); // Inverse Operation
 
         zone.appendChild(item);
         clearSelection();

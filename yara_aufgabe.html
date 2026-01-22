@@ -71,34 +71,43 @@
             border:2px dashed rgba(110,40,190,0.30);
             background: rgba(255,255,255,0.70);
             padding:16px;
-            line-height:1.85;
+            line-height:2.0; /* Etwas mehr Luft für die Interaktion */
             font-size:16px;
-
             max-height: 460px;
             overflow-y: auto;
         }
 
-        /* Tokens (Wörter + Satzzeichen) */
+        /* --- VERBESSERUNG: SIGNIFIERS & AFFORDANZEN --- */
         .token{
             cursor:pointer;
-            padding:1px 2px;
-            border-radius:6px;
+            padding: 1px 3px;
+            margin: 0 1px;
+            border-radius: 4px;
             background: transparent;
-            transition: background 0.12s ease;
+            transition: all 0.15s ease;
             display:inline-block;
+
+            /* Signifier: Die Linie zeigt "Ich bin klickbar" */
+            border-bottom: 2px solid rgba(163, 92, 255, 0.25);
         }
 
-        /* Optional: minimaler Hover, sehr unauffällig */
+        /* Feedback beim Hovern: Affordance wird bestätigt */
         .token:hover{
-            background: rgba(0,0,0,0.04);
+            background: rgba(163, 92, 255, 0.15);
+            border-bottom-color: #a35cff;
+            transform: translateY(-1px);
         }
 
-        /* Markierung erst nach Klick */
+        /* Markierung aktiv */
         .token.active{
-            background: rgba(255, 230, 120, 0.88);
+            background: rgba(255, 230, 120, 0.95);
+            border-bottom-color: #eebb00;
+            color: black;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        /* ----------------------------------------------- */
 
-        /* Schöne Absätze */
         .para{ margin: 16px 0; }
 
         .hint{
@@ -136,7 +145,7 @@
 <div class="wrap">
     <div class="card">
         <h2>📚 Yaras Aufgabe – Hinweise markieren</h2>
-        <p>Markiere einzelne Wörter oder Zeichen (z.B. „Zusammenfassend“, „sehr“, „—“, „.“). Klick = markieren / Klick nochmal = entfernen.</p>
+        <p>Klicke auf Wörter oder Zeichen, die nach KI klingen (z.B. „Zusammenfassend“, „sehr“). <br><b>Tipp:</b> Fahre mit der Maus über den Text, um interaktive Teile zu sehen.</p>
 
         <div class="toolbar">
             <button id="reset" type="button">🗑️ Reset</button>
@@ -144,8 +153,6 @@
 
         <div class="paper">
             <b>Beispieltext (gemischt):</b><br><br>
-
-            <!-- Hier steht der Text "normal" drin, wird per JS in Tokens umgebaut -->
             <div id="tokenText">
                 Künstliche Intelligenz ist ein sehr wichtiges Thema, das in vielen Bereichen Anwendung findet.
                 Es gibt zahlreiche Vorteile, die durch den Einsatz von KI entstehen können. Gleichzeitig sollte man jedoch auch Herausforderungen berücksichtigen.
@@ -172,17 +179,10 @@
     const resetBtn = document.getElementById("reset");
     const tokenText = document.getElementById("tokenText");
 
-    // Zerlegt Text in Tokens: Wörter ODER einzelne Zeichen (Satzzeichen, Gedankenstrich, etc.)
-    // - \p{L}\p{N} = Buchstaben/Zahlen (Unicode)
-    // - alles andere, was kein Leerzeichen ist, wird einzelnes Token
     function tokenize(line) {
-        // Beispiele:
-        // "Abkürzungen — und" -> ["Abkürzungen", "—", "und"]
-        // "Thema," -> ["Thema", ","]
         return line.match(/[\p{L}\p{N}]+|[^\s\p{L}\p{N}]/gu) || [];
     }
 
-    // Baut HTML: jede Zeile -> Absatz, jedes Token -> klickbarer span
     function renderTokenizedText() {
         const raw = tokenText.textContent;
         const lines = raw.split("\n");
@@ -191,8 +191,6 @@
 
         lines.forEach(line => {
             const trimmed = line.trim();
-
-            // Leerzeile = Absatz-Abstand
             if (trimmed.length === 0) {
                 const spacer = document.createElement("div");
                 spacer.className = "para";
@@ -209,18 +207,14 @@
                 span.className = "token";
                 span.textContent = t;
 
-                // Toggle Markierung
                 span.addEventListener("click", () => {
                     span.classList.toggle("active");
                 });
 
                 p.appendChild(span);
 
-                // Abstände: zwischen "Wort Wort" ja, aber vor Satzzeichen nicht
-                // Heuristik: Wenn nächstes Token ein Satzzeichen ist -> kein Space
                 const next = tokens[idx + 1];
-
-                const isPunct = (x) => x && /[^\p{L}\p{N}]/u.test(x); // kein Buchstabe/Zahl => punctuation/symbol
+                const isPunct = (x) => x && /[^\p{L}\p{N}]/u.test(x);
                 if (next && !isPunct(next)) {
                     p.appendChild(document.createTextNode(" "));
                 }
@@ -229,17 +223,14 @@
             container.appendChild(p);
         });
 
-        // Ersetze Originalinhalt
         tokenText.innerHTML = "";
         tokenText.appendChild(container);
     }
 
-    // Reset: alle aktiven Tokens entfernen
     resetBtn.addEventListener("click", () => {
         document.querySelectorAll(".token.active").forEach(t => t.classList.remove("active"));
     });
 
-    // Initial render
     renderTokenizedText();
 </script>
 </body>
