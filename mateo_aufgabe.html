@@ -16,6 +16,7 @@
             align-items:center;
             padding:30px;
             color:#2a153d;
+            box-sizing:border-box;
         }
         .wrap{ width:min(1100px, 95vw); display:grid; gap:16px; }
         .card{
@@ -38,11 +39,7 @@
             border:1px solid rgba(120,60,190,0.20);
             box-shadow: 0 10px 22px rgba(52,10,88,0.10);
         }
-        .pill.active{
-            background: linear-gradient(135deg, #a35cff, #6a22cc);
-            color:white;
-            border-color: rgba(255,255,255,0.25);
-        }
+        .pill.active{ background: linear-gradient(135deg, #a35cff, #6a22cc); color:white; }
 
         h2{ margin:12px 0 10px 0; }
         p{ margin:0; line-height:1.6; }
@@ -62,7 +59,9 @@
             box-shadow: 0 10px 22px rgba(52,10,88,0.10);
             cursor:pointer;
             transition: transform 0.12s ease, filter 0.12s ease;
-            min-height:120px;
+            min-height:150px;
+            position:relative;
+            overflow:hidden;
         }
         .scene:hover{ transform: translateY(-2px); filter: brightness(1.02); }
         .scene.selected{
@@ -75,8 +74,50 @@
             font-size:13px;
             color:#4a1c7a;
             margin-bottom:8px;
+            display:flex;
+            gap:8px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+        .tag{
+            font-size:11px;
+            padding:4px 8px;
+            border-radius:999px;
+            background: rgba(163,92,255,0.12);
+            border:1px solid rgba(163,92,255,0.20);
+            color:#4a1c7a;
+            font-weight:800;
         }
         .scene-text{ margin:0; font-size:14px; line-height:1.45; }
+
+        /* Screenshot */
+        .shot{
+            margin-top:10px;
+            border-radius:12px;
+            border:1px solid rgba(120,60,190,0.18);
+            background: rgba(255,255,255,0.65);
+            box-shadow: inset 0 0 0 1px rgba(163,92,255,0.08);
+            overflow:hidden;
+            cursor: zoom-in;
+        }
+        .shot img{
+            width:100%;
+            height:170px;
+            object-fit:cover;
+            display:block;
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+        .shot:hover img{
+            transform: scale(1.02);
+            filter: brightness(1.03);
+        }
+        .shot-caption{
+            font-size:12px;
+            opacity:0.85;
+            padding:8px 10px;
+            color:#4a1c7a;
+            border-top:1px solid rgba(120,60,190,0.12);
+        }
 
         .toolbar{
             display:flex;
@@ -84,7 +125,12 @@
             flex-wrap:wrap;
             margin-top:14px;
             align-items:center;
-            min-height: 50px; /* Platzhalter damit es nicht springt */
+            padding:10px;
+            border-radius:16px;
+            background: rgba(255,255,255,0.55);
+            border:1px solid rgba(120,60,190,0.18);
+            box-shadow: 0 10px 22px rgba(52,10,88,0.08);
+            min-height: 56px;
         }
 
         button{
@@ -97,39 +143,46 @@
             color:white;
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
             transition: all 0.2s ease;
-            opacity: 0.5; /* Default: Disabled look until selection */
+            opacity: 0.5;
             pointer-events: none;
+            display:flex;
+            align-items:center;
+            gap:8px;
         }
-        /* Wenn aktiv (Klasse wird per JS gesetzt) */
-        button.active-btn {
+        button.active-btn { opacity: 1; pointer-events: all; }
+        button.active-btn:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+
+        .secondary{
+            background: rgba(255,255,255,0.92);
+            color:#4a1c7a;
+            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: 0 10px 22px rgba(91,25,184,0.12);
             opacity: 1;
             pointer-events: all;
         }
-        button.active-btn:hover{ filter:brightness(1.05); transform: translateY(-1px); }
-
-        /* Reset Button immer aktiv */
-        #btnReset { opacity: 1; pointer-events: all; background: #eee; color: #4a1c7a; }
 
         .zones{
             margin-top:14px;
             display:grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap:12px;
         }
-
         .zone{
             border-radius:16px;
             border:2px dashed rgba(110,40,190,0.30);
-            background: rgba(138,74,214,0.08);
+            background:
+                    radial-gradient(circle at 25% 15%, rgba(255,255,255,0.75), rgba(138,74,214,0.06)),
+                    repeating-linear-gradient(45deg, rgba(138,74,214,0.05), rgba(138,74,214,0.05) 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
             padding:12px;
             min-height:190px;
+            box-shadow: inset 0 0 0 1px rgba(120,60,190,0.15);
+            transition: box-shadow .15s ease, transform .15s ease;
         }
-
-        .zone h3{
-            margin:0 0 10px 0;
-            font-size:14px;
-            color:#4a1c7a;
+        .zone:hover{
+            box-shadow: inset 0 0 0 2px rgba(163,92,255,0.30), 0 10px 22px rgba(52,10,88,0.08);
+            transform: translateY(-1px);
         }
+        .zone h3{ margin:0 0 10px 0; font-size:14px; color:#4a1c7a; }
 
         .placed{
             background: rgba(255,255,255,0.78);
@@ -144,8 +197,6 @@
             transition: opacity 0.2s;
         }
         .placed:hover { opacity: 0.7; text-decoration: line-through; }
-
-        .hint{ margin-top:10px; font-size:13px; opacity:0.85; }
 
         .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
         a.btn{
@@ -166,9 +217,71 @@
             box-shadow: 0 10px 22px rgba(91,25,184,0.15);
         }
 
+        /* Modal */
+        .modal{
+            position:fixed;
+            inset:0;
+            background: rgba(20, 6, 35, 0.72);
+            display:none;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+            z-index:999;
+        }
+        .modal.on{ display:flex; }
+        .modal-card{
+            width:min(980px, 96vw);
+            max-height: 92vh;
+            background: rgba(255,255,255,0.96);
+            border-radius:18px;
+            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: 0 18px 48px rgba(0,0,0,0.30);
+            overflow:hidden;
+        }
+        .modal-head{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:12px;
+            padding:12px 14px;
+            background: linear-gradient(135deg, rgba(163,92,255,0.18), rgba(91,25,184,0.10));
+            border-bottom:1px solid rgba(120,60,190,0.18);
+        }
+        .modal-title{
+            font-weight:800;
+            color:#4a1c7a;
+            font-size:14px;
+        }
+        .modal-close{
+            border:none;
+            cursor:pointer;
+            border-radius:999px;
+            padding:8px 12px;
+            font-weight:bold;
+            background: rgba(255,255,255,0.92);
+            color:#4a1c7a;
+            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: 0 10px 22px rgba(91,25,184,0.12);
+            pointer-events:auto;
+            opacity:1;
+        }
+        .modal-body{
+            padding:14px;
+            background: rgba(255,255,255,0.92);
+        }
+        .modal-body img{
+            width:100%;
+            height:auto;
+            display:block;
+            border-radius:14px;
+            border:1px solid rgba(120,60,190,0.18);
+            box-shadow: 0 12px 28px rgba(52,10,88,0.12);
+        }
+
         @media (max-width: 900px){
             .scene-grid{ grid-template-columns: 1fr; }
             .zones{ grid-template-columns: 1fr; }
+            .shot img{ height:220px; }
         }
     </style>
 </head>
@@ -184,29 +297,73 @@
             <a class="pill" href="abschluss.html">⭐ Abschluss</a>
         </div>
 
-        <h2>⚠️ Mateos Aufgabe – Szenen zuordnen</h2>
-        <p>1. Wähle oben eine Szene aus.<br>2. Entscheide unten: Ist das echt, KI oder Manipulation?</p>
+        <h2>⚠️ Station 2 – Mateos Manipulationslabyrinth</h2>
+        <p>
+            <b>Aufgabe:</b> Schau dir die <b>6 Aufgaben-Kacheln</b> an (3 Text-Szenen + 3 Screenshots).
+            Wähle eine Kachel und ordne zu: ✔ Echt / 🤖 KI-generiert / ⚠️ Manipulativ / ➖ Neutral.
+            <br><b>Reversibilität:</b> ↩️ Undo macht den letzten Schritt rückgängig.
+        </p>
 
         <div class="scene-grid">
-            <div class="scene" data-id="1">
-                <div class="scene-title">Szene 1 · Influencer-Chat</div>
+            <!-- TEXT 1–3 -->
+            <div class="scene" data-kind="text" data-id="T1">
+                <div class="scene-title">Szene 1 · Influencer-Chat <span class="tag">Text</span></div>
                 <p class="scene-text">„Kauf das JETZT, sonst bist du uncool. Alle haben’s schon.“</p>
             </div>
-            <div class="scene" data-id="2">
-                <div class="scene-title">Szene 2 · Perfektes Selfie</div>
+
+            <div class="scene" data-kind="text" data-id="T2">
+                <div class="scene-title">Szene 2 · Perfektes Selfie <span class="tag">Text</span></div>
                 <p class="scene-text">Bild wirkt extrem glatt: perfekte Haut, unrealistische Lichtreflexe, keine Poren.</p>
             </div>
-            <div class="scene" data-id="3">
-                <div class="scene-title">Szene 3 · Freundesfoto</div>
+
+            <div class="scene" data-kind="text" data-id="T3">
+                <div class="scene-title">Szene 3 · Freundesfoto <span class="tag">Text</span></div>
                 <p class="scene-text">„Bin gerade am See. Das Wetter ist mies, aber egal. 😂“</p>
+            </div>
+
+            <!-- SCREENSHOTS 1–3 -->
+            <div class="scene" data-kind="img" data-id="S1"
+                 data-img="public/Bildschirmfoto%202026-01-22%20um%2022.51.45.png"
+                 data-imgtitle="Screenshot 1 – Social-Profil / Influencer">
+                <div class="scene-title">Screenshot 1 <span class="tag">Bild</span></div>
+                <p class="scene-text">Klicke zum Vergrößern. Ordne dann ein: Echt / KI / Manipulativ / Neutral.</p>
+                <div class="shot" role="button" tabindex="0" aria-label="Screenshot 1 öffnen">
+                    <img src="public/Bildschirmfoto%202026-01-22%20um%2022.51.45.png" alt="Screenshot 1">
+                    <div class="shot-caption">Bild öffnen (klicken)</div>
+                </div>
+            </div>
+
+            <div class="scene" data-kind="img" data-id="S2"
+                 data-img="public/Bildschirmfoto%202026-01-22%20um%2022.51.55.png"
+                 data-imgtitle="Screenshot 2 – Post/Tweet mit Bild">
+                <div class="scene-title">Screenshot 2 <span class="tag">Bild</span></div>
+                <p class="scene-text">Klicke zum Vergrößern. Ordne dann ein: Echt / KI / Manipulativ / Neutral.</p>
+                <div class="shot" role="button" tabindex="0" aria-label="Screenshot 2 öffnen">
+                    <img src="public/Bildschirmfoto%202026-01-22%20um%2022.51.55.png" alt="Screenshot 2">
+                    <div class="shot-caption">Bild öffnen (klicken)</div>
+                </div>
+            </div>
+
+            <div class="scene" data-kind="img" data-id="S3"
+                 data-img="public/Bildschirmfoto%202026-01-22%20um%2022.52.04.png"
+                 data-imgtitle="Screenshot 3 – Link-in-Bio / Promo-Seite">
+                <div class="scene-title">Screenshot 3 <span class="tag">Bild</span></div>
+                <p class="scene-text">Klicke zum Vergrößern. Ordne dann ein: Echt / KI / Manipulativ / Neutral.</p>
+                <div class="shot" role="button" tabindex="0" aria-label="Screenshot 3 öffnen">
+                    <img src="public/Bildschirmfoto%202026-01-22%20um%2022.52.04.png" alt="Screenshot 3">
+                    <div class="shot-caption">Bild öffnen (klicken)</div>
+                </div>
             </div>
         </div>
 
-        <div class="toolbar">
+        <div class="toolbar" aria-label="Zuordnungswerkzeuge">
             <button id="btnEcht" type="button">✔ Ist Echt</button>
             <button id="btnKI" type="button">🤖 Ist KI-generiert</button>
             <button id="btnManip" type="button">⚠️ Ist Manipulativ</button>
-            <button id="btnReset" type="button">🗑️ Reset</button>
+            <button id="btnNeutral" type="button">➖ Ist Neutral</button>
+
+            <button id="btnUndo" class="secondary" type="button" disabled>↩️ Undo</button>
+            <button id="btnReset" class="secondary" type="button">🗑️ Reset</button>
         </div>
 
         <div class="zones">
@@ -222,89 +379,264 @@
                 <h3>⚠️ Manipulativ</h3>
                 <div id="zoneManip"></div>
             </div>
+            <div class="zone">
+                <h3>➖ Neutral</h3>
+                <div id="zoneNeutral"></div>
+            </div>
         </div>
 
         <div class="row">
             <a class="btn secondary" href="mateo.html">← Zurück</a>
             <a class="btn" href="yara.html">Weiter → Station 3</a>
         </div>
+
+        <p style="margin-top:12px; font-size:13px; opacity:0.9;">
+            <b>Frage:</b> Wie könnte Mateo KI-generierten und menschlichen Content in Zukunft besser voneinander unterscheiden?
+        </p>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Screenshot Großansicht">
+        <div class="modal-head">
+            <div class="modal-title" id="modalTitle">Screenshot</div>
+            <button class="modal-close" id="modalClose" type="button">✕ Schließen</button>
+        </div>
+        <div class="modal-body">
+            <img id="modalImg" src="" alt="Screenshot Großansicht">
+        </div>
     </div>
 </div>
 
 <script>
     const scenes = document.querySelectorAll(".scene");
+
     const zoneEcht = document.getElementById("zoneEcht");
     const zoneKI = document.getElementById("zoneKI");
     const zoneManip = document.getElementById("zoneManip");
+    const zoneNeutral = document.getElementById("zoneNeutral");
 
     const btnEcht = document.getElementById("btnEcht");
     const btnKI = document.getElementById("btnKI");
     const btnManip = document.getElementById("btnManip");
-    const btnReset = document.getElementById("btnReset");
+    const btnNeutral = document.getElementById("btnNeutral");
 
-    // Array für einfacheres Handling
-    const actionButtons = [btnEcht, btnKI, btnManip];
+    const btnReset = document.getElementById("btnReset");
+    const btnUndo = document.getElementById("btnUndo");
+
+    const actionButtons = [btnEcht, btnKI, btnManip, btnNeutral];
 
     let selectedScene = null;
+
+    // Undo Stack = inverse Operationen
+    const history = []; // functions
 
     function clearSelection(){
         scenes.forEach(s => s.classList.remove("selected"));
         selectedScene = null;
 
-        // Buttons deaktivieren und Text zurücksetzen
-        actionButtons.forEach(b => {
-            b.classList.remove("active-btn");
-            // Original-Texte wiederherstellen (kurz)
-            if(b.id === "btnEcht") b.textContent = "✔ Ist Echt";
-            if(b.id === "btnKI") b.textContent = "🤖 Ist KI-generiert";
-            if(b.id === "btnManip") b.textContent = "⚠️ Ist Manipulativ";
-        });
+        actionButtons.forEach(b => b.classList.remove("active-btn"));
+        btnEcht.textContent = "✔ Ist Echt";
+        btnKI.textContent = "🤖 Ist KI-generiert";
+        btnManip.textContent = "⚠️ Ist Manipulativ";
+        btnNeutral.textContent = "➖ Ist Neutral";
+    }
+
+    function updateUndo(){
+        btnUndo.disabled = (history.length === 0);
     }
 
     scenes.forEach(scene => {
-        scene.addEventListener("click", () => {
+        scene.addEventListener("click", (e) => {
+            const shot = e.target.closest(".shot");
+            if(shot){
+                openModalFromScene(scene);
+                return;
+            }
+
             scenes.forEach(s => s.classList.remove("selected"));
             scene.classList.add("selected");
             selectedScene = scene;
 
-            // --- VERBESSERUNG: PRAGMATIK & MAPPING ---
-            // Buttons aktivieren und Text anpassen, damit der Bezug klar ist
-            const title = scene.querySelector(".scene-title").textContent.split("·")[0].trim(); // nur "Szene X"
-
             actionButtons.forEach(b => b.classList.add("active-btn"));
-            btnEcht.textContent = `✔ ${title} ist Echt`;
-            btnKI.textContent = `🤖 ${title} ist KI`;
-            btnManip.textContent = `⚠️ ${title} ist Manipulativ`;
-            // -----------------------------------------
+
+            const id = scene.getAttribute("data-id");
+            const kind = scene.getAttribute("data-kind");
+            const label = (kind === "img") ? `Screenshot ${id.replace("S","")}` : `Szene ${id.replace("T","")}`;
+
+            btnEcht.textContent = `✔ ${label} ist Echt`;
+            btnKI.textContent = `🤖 ${label} ist KI`;
+            btnManip.textContent = `⚠️ ${label} ist Manipulativ`;
+            btnNeutral.textContent = `➖ ${label} ist Neutral`;
         });
+
+        const shot = scene.querySelector(".shot");
+        if(shot){
+            shot.addEventListener("keydown", (ev) => {
+                if(ev.key === "Enter" || ev.key === " "){
+                    ev.preventDefault();
+                    openModalFromScene(scene);
+                }
+            });
+        }
     });
 
     function placeTo(zone){
         if(!selectedScene) return;
 
-        const title = selectedScene.querySelector(".scene-title").textContent;
-        const text = selectedScene.querySelector(".scene-text").textContent;
+        const kind = selectedScene.getAttribute("data-kind");
+        const titleEl = selectedScene.querySelector(".scene-title");
+        const textEl  = selectedScene.querySelector(".scene-text");
+
+        let title = titleEl ? titleEl.textContent.replace("Text","").replace("Bild","").trim() : "Aufgabe";
+        let text  = textEl ? textEl.textContent.trim() : "";
 
         const item = document.createElement("div");
         item.className = "placed";
-        item.innerHTML = "<b>" + title + "</b><br>" + text;
-        item.title = "Klicken zum Entfernen";
 
-        item.addEventListener("click", () => item.remove()); // Inverse Operation
+        if(kind === "img"){
+            const img = selectedScene.getAttribute("data-img");
+            item.innerHTML = "<b>" + escapeHtml(title) + "</b><br>📷 Screenshot eingeordnet";
+            item.dataset.img = img || "";
+            item.dataset.imgtitle = title;
+
+            item.title = "Klicken zum Vergrößern (Shift+Klick = entfernen)";
+            item.addEventListener("click", (ev) => {
+                if(ev.shiftKey){
+                    removePlaced(item);
+                } else {
+                    openModal(item.dataset.img, item.dataset.imgtitle || "Screenshot");
+                }
+            });
+        } else {
+            item.innerHTML = "<b>" + escapeHtml(title) + "</b><br>" + escapeHtml(text);
+            item.title = "Klicken zum Entfernen (Undo verfügbar)";
+            item.addEventListener("click", () => removePlaced(item));
+        }
 
         zone.appendChild(item);
+
+        // Undo: Entfernen
+        history.push(() => {
+            if(item.isConnected) item.remove();
+            updateUndo();
+        });
+
+        updateUndo();
         clearSelection();
+    }
+
+    function removePlaced(item){
+        if(!item.isConnected) return;
+
+        const parent = item.parentNode;
+        const next = item.nextSibling;
+        item.remove();
+
+        // Undo: wieder einsetzen
+        history.push(() => {
+            if(!parent) return;
+            if(next && next.parentNode === parent){
+                parent.insertBefore(item, next);
+            } else {
+                parent.appendChild(item);
+            }
+            updateUndo();
+        });
+
+        updateUndo();
     }
 
     btnEcht.addEventListener("click", () => placeTo(zoneEcht));
     btnKI.addEventListener("click", () => placeTo(zoneKI));
     btnManip.addEventListener("click", () => placeTo(zoneManip));
+    btnNeutral.addEventListener("click", () => placeTo(zoneNeutral));
+
+    btnUndo.addEventListener("click", () => {
+        const undo = history.pop();
+        if(undo) undo();
+        updateUndo();
+    });
 
     btnReset.addEventListener("click", () => {
+        const snapshot = [
+            ...zoneEcht.querySelectorAll(".placed"),
+            ...zoneKI.querySelectorAll(".placed"),
+            ...zoneManip.querySelectorAll(".placed"),
+            ...zoneNeutral.querySelectorAll(".placed"),
+        ];
+
+        if(snapshot.length === 0){
+            clearSelection();
+            history.length = 0;
+            updateUndo();
+            return;
+        }
+
+        // Undo: alles wiederherstellen
+        const items = snapshot.map(node => ({ node, parent: node.parentNode }));
+        history.push(() => {
+            items.forEach(({node, parent}) => {
+                if(parent) parent.appendChild(node);
+            });
+            updateUndo();
+        });
+
         zoneEcht.innerHTML = "";
         zoneKI.innerHTML = "";
         zoneManip.innerHTML = "";
+        zoneNeutral.innerHTML = "";
+
         clearSelection();
+        updateUndo();
+    });
+
+    updateUndo();
+
+    function escapeHtml(str){
+        return String(str)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    // ===== Modal =====
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalClose = document.getElementById("modalClose");
+
+    function openModalFromScene(scene){
+        const img = scene.getAttribute("data-img");
+        const title = scene.getAttribute("data-imgtitle") || "Screenshot";
+        if(!img) return;
+        openModal(img, title);
+    }
+
+    function openModal(img, title){
+        modalImg.src = img;
+        modalTitle.textContent = title;
+        modal.classList.add("on");
+        modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal(){
+        modal.classList.remove("on");
+        modal.setAttribute("aria-hidden", "true");
+        modalImg.src = "";
+    }
+
+    modalClose.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+        if(e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+        if(e.key === "Escape" && modal.classList.contains("on")){
+            closeModal();
+        }
     });
 </script>
 </body>
