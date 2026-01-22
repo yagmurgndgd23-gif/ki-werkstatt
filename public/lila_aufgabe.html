@@ -60,6 +60,7 @@
             color:white;
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
             transition: filter 0.12s ease, transform 0.12s ease;
+            white-space: nowrap;
         }
 
         button:hover{
@@ -69,6 +70,14 @@
 
         button.active{
             outline: 3px solid rgba(255,255,255,0.65);
+        }
+
+        /* Secondary Button (für Navigation) */
+        .btn-secondary{
+            background: rgba(255,255,255,0.90);
+            color:#4a1c7a;
+            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: 0 10px 22px rgba(91,25,184,0.12);
         }
 
         .hint{
@@ -126,8 +135,8 @@
             opacity:0.85;
         }
 
-        /* Bildvergleich */
-        .img-grid{
+        /* 4 Bilder, ohne KI/Echt Label */
+        .img-grid-4{
             display:grid;
             grid-template-columns: 1fr 1fr;
             gap:10px;
@@ -145,11 +154,12 @@
 
         .img-card img{
             width:100%;
-            height:140px;
+            height:150px;
             object-fit:cover;
             display:block;
         }
 
+        /* Neutraler Caption (nur Bildnummer) */
         .img-cap{
             padding:8px 10px;
             font-size:12px;
@@ -173,19 +183,28 @@
             z-index: 50;
         }
 
+        /* Footer Links/Buttons */
+        .footer-row{
+            margin-top:12px;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
         a.back{
             display:inline-block;
-            margin-top:12px;
             text-decoration:none;
             font-weight:bold;
             color:#4a1c7a;
+            padding:10px 0;
         }
 
         @media (max-width: 900px){
             .example-grid{ grid-template-columns: 1fr; height:auto; }
             .canvas{ height:auto; min-height:520px; }
-            .img-grid{ grid-template-columns: 1fr; }
-            .img-card img{ height:180px; }
+            .img-grid-4{ grid-template-columns: 1fr; }
+            .img-card img{ height:200px; }
         }
     </style>
 </head>
@@ -203,51 +222,73 @@
             <button id="clearAll">🗑️ Alles löschen</button>
         </div>
 
-        <div class="hint">Tipp: Klebe Sticker auf Textstellen oder direkt auf die Bilder (Echt vs. KI).</div>
+        <div class="hint">
+            Klebe Sticker auf Textstellen oder direkt auf die Bilder. <br>
+            <b>Hinweis:</b> Die Bilder sind absichtlich neutral – es wird nicht angezeigt, was KI ist.
+        </div>
 
         <div class="canvas" id="canvas">
             <div class="example-grid">
 
                 <div class="example-card">
-                    <div class="label">Beispiel A · eher menschlich (Text)</div>
+                    <div class="label">Beispiel A · Text</div>
                     <p class="ex-text">
                         „Ich hab heute beim Zeichnen gemerkt, dass meine Linie wackelt, wenn ich gestresst bin.
                         Aber genau das fühlt sich nach mir an, wie ein Tagebucheintrag in Strichen.“
                     </p>
-                    <p class="ex-sub">Markiere die Stelle, die besonders individuell wirkt.</p>
+                    <p class="ex-sub">Setze Sticker: Was wirkt persönlich / menschlich?</p>
                 </div>
 
                 <div class="example-card">
-                    <div class="label">Beispiel B · eher KI-typisch (Text)</div>
+                    <div class="label">Beispiel B · Text</div>
                     <p class="ex-text">
                         „Kreativität ist ein wichtiger Prozess, der durch unterschiedliche Techniken gefördert werden kann.
                         Es empfiehlt sich, regelmäßig zu üben und Inspiration aus verschiedenen Quellen zu nutzen.“
                     </p>
-                    <p class="ex-sub">Markiere die Stelle, die generisch/glatt wirkt.</p>
+                    <p class="ex-sub">Setze Sticker: Was wirkt generisch / glatt?</p>
                 </div>
 
                 <div class="example-card">
-                    <div class="label">Beispiel C · Bildvergleich (Echt vs. KI)</div>
+                    <div class="label">Beispiel C · Bildauswahl (4 Bilder)</div>
 
-                    <div class="img-grid">
+                    <div class="img-grid-4">
                         <div class="img-card">
-                            <img src="lila_beispiel_echt.png" alt="Echtes Foto (Katzenbild)" />
-                            <div class="img-cap">📷 Echt (Foto)</div>
+                            <img src="bild4.jpg" alt="Bild 1" />
+                            <div class="img-cap">Bild 1</div>
                         </div>
 
                         <div class="img-card">
-                            <img src="lila_beispiel_ki.png" alt="KI-generiertes Beispielbild" />
-                            <div class="img-cap">🤖 KI-Beispiel</div>
+                            <img src="bild1.jpg" alt="Bild 2" />
+                            <div class="img-cap">Bild 2</div>
+                        </div>
+
+                        <div class="img-card">
+                            <img src="Bild%202" alt="Bild 3" />
+                            <div class="img-cap">Bild 3</div>
+                        </div>
+
+                        <div class="img-card">
+                            <img src="bild3.jpg" alt="Bild 4" />
+                            <div class="img-cap">Bild 4</div>
                         </div>
                     </div>
 
-                    <p class="ex-sub">Klebe Sticker auf Details: Was wirkt menschlich? Was wirkt künstlich?</p>
+                    <p class="ex-sub">
+                        Klebe Sticker auf Details: Welche wirken „menschlich“? Welche wirken „künstlich“?
+                    </p>
                 </div>
 
             </div>
         </div>
 
-        <a class="back" href="lila.html">← Zurück zur Station</a>
+        <div class="footer-row">
+            <a class="back" href="lila.html">← Zurück zur Station</a>
+
+            <!-- Weiter zu Station 2 -->
+            <button class="btn-secondary" type="button" onclick="window.location.href='mateo.html'">
+                ➜ Weiter zu Station 2
+            </button>
+        </div>
     </div>
 </div>
 
