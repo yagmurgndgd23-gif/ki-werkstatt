@@ -57,11 +57,16 @@
             background: linear-gradient(135deg, #a35cff, #6a22cc);
             color:white;
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
-            transition: filter 0.12s ease, transform 0.12s ease;
+            transition: filter 0.12s ease, transform 0.12s ease, opacity 0.12s ease;
         }
         button:hover{
             filter:brightness(1.05);
             transform: translateY(-1px);
+        }
+        button:disabled{
+            opacity:0.55;
+            cursor:not-allowed;
+            transform:none;
         }
 
         /* Textbereich */
@@ -71,13 +76,13 @@
             border:2px dashed rgba(110,40,190,0.30);
             background: rgba(255,255,255,0.70);
             padding:16px;
-            line-height:2.0; /* Etwas mehr Luft für die Interaktion */
+            line-height:2.0;
             font-size:16px;
             max-height: 460px;
             overflow-y: auto;
         }
 
-        /* --- VERBESSERUNG: SIGNIFIERS & AFFORDANZEN --- */
+        /* --- SIGNIFIERS & AFFORDANZEN --- */
         .token{
             cursor:pointer;
             padding: 1px 3px;
@@ -86,19 +91,16 @@
             background: transparent;
             transition: all 0.15s ease;
             display:inline-block;
-
-            /* Signifier: Die Linie zeigt "Ich bin klickbar" */
             border-bottom: 2px solid rgba(163, 92, 255, 0.25);
+            user-select:none;
         }
 
-        /* Feedback beim Hovern: Affordance wird bestätigt */
         .token:hover{
             background: rgba(163, 92, 255, 0.15);
             border-bottom-color: #a35cff;
             transform: translateY(-1px);
         }
 
-        /* Markierung aktiv */
         .token.active{
             background: rgba(255, 230, 120, 0.95);
             border-bottom-color: #eebb00;
@@ -106,7 +108,6 @@
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        /* ----------------------------------------------- */
 
         .para{ margin: 16px 0; }
 
@@ -138,6 +139,22 @@
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
         }
         a.primary:hover{ filter:brightness(1.05); }
+
+        .status{
+            margin-top:10px;
+            font-size:13px;
+            opacity:0.9;
+            display:flex;
+            gap:10px;
+            align-items:center;
+            flex-wrap:wrap;
+        }
+        .pill{
+            background: rgba(163,92,255,0.12);
+            border:1px solid rgba(163,92,255,0.22);
+            padding:6px 10px;
+            border-radius:999px;
+        }
     </style>
 </head>
 
@@ -145,10 +162,19 @@
 <div class="wrap">
     <div class="card">
         <h2>📚 Yaras Aufgabe – Hinweise markieren</h2>
-        <p>Klicke auf Wörter oder Zeichen, die nach KI klingen (z.B. „Zusammenfassend“, „sehr“). <br><b>Tipp:</b> Fahre mit der Maus über den Text, um interaktive Teile zu sehen.</p>
+        <p>
+            Klicke auf Wörter oder Zeichen, die nach KI klingen (z.B. „Zusammenfassend“, „sehr“).<br>
+            <b>Tipp:</b> Fahre mit der Maus über den Text: Hover zeigt dir klickbare Teile (Signifier).
+        </p>
 
         <div class="toolbar">
-            <button id="reset" type="button">🗑️ Reset</button>
+            <button id="undo" type="button" disabled>↩️ Rückgängig</button>
+            <button id="reset" type="button">🧹 Alles zurücksetzen</button>
+        </div>
+
+        <div class="status">
+            <span class="pill" id="countPill">Markiert: 0</span>
+            <span class="pill" id="undoPill">Undo verfügbar: nein</span>
         </div>
 
         <div class="paper">
@@ -177,10 +203,26 @@
 
 <script>
     const resetBtn = document.getElementById("reset");
+    const undoBtn  = document.getElementById("undo");
     const tokenText = document.getElementById("tokenText");
+
+    const countPill = document.getElementById("countPill");
+    const undoPill = document.getElementById("undoPill");
+
+    // Undo-Stack: speichert inverse Operationen (Gruppen-Theorie / Reversibilität)
+    const undoStack = [];
 
     function tokenize(line) {
         return line.match(/[\p{L}\p{N}]+|[^\s\p{L}\p{N}]/gu) || [];
+    }
+
+    function updateUI() {
+        const marked = document.querySelectorAll(".token.active").length;
+        countPill.textContent = `Markiert: ${marked}`;
+
+        const hasUndo = undoStack.length > 0;
+        undoBtn.disabled = !hasUndo;
+        undoPill.textContent = `Undo verfügbar: ${hasUndo ? "ja" : "nein"}`;
     }
 
     function renderTokenizedText() {
@@ -208,7 +250,21 @@
                 span.textContent = t;
 
                 span.addEventListener("click", () => {
+                    const wasActive = span.classList.contains("active");
                     span.classList.toggle("active");
+                    const isActive = span.classList.contains("active");
+
+                    // Undo: einfach wieder togglen (inverse Operation)
+                    undoStack.push(() => {
+                        // Setze wieder auf vorherigen Zustand
+                        span.classList.toggle("active", wasActive);
+                        updateUI();
+                    });
+
+                    // Konsistenz: wenn Toggle keinen Zustand verändert hat (sollte nie), keine Action
+                    if (wasActive === isActive) undoStack.pop();
+
+                    updateUI();
                 });
 
                 p.appendChild(span);
@@ -227,11 +283,29 @@
         tokenText.appendChild(container);
     }
 
+    undoBtn.addEventListener("click", () => {
+        const action = undoStack.pop();
+        if (action) action();
+        updateUI();
+    });
+
     resetBtn.addEventListener("click", () => {
+        const activeNow = Array.from(document.querySelectorAll(".token.active"));
+        if (activeNow.length === 0) return;
+
+        // Reset ist destruktiv → aber wir machen ihn reversibel (Undo-Action speichert vorherigen Zustand)
+        const snapshot = activeNow.map(el => el);
+        undoStack.push(() => {
+            snapshot.forEach(el => el.classList.add("active"));
+            updateUI();
+        });
+
         document.querySelectorAll(".token.active").forEach(t => t.classList.remove("active"));
+        updateUI();
     });
 
     renderTokenizedText();
+    updateUI();
 </script>
 </body>
 </html>

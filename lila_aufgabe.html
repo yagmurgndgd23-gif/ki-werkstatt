@@ -6,6 +6,14 @@
     <title>Lila – Aufgabe (Sticker + KI/Real Quiz)</title>
 
     <style>
+        :root{
+            --ink:#2a153d; --ink2:#4a1c7a;
+            --card:rgba(255,255,255,0.90);
+            --stroke:rgba(120,60,190,0.25);
+            --shadow:0 12px 35px rgba(52,10,88,0.35);
+            --btn: linear-gradient(135deg, #a35cff, #6a22cc);
+        }
+
         body{
             margin:0;
             font-family: Arial, sans-serif;
@@ -15,28 +23,34 @@
             justify-content:center;
             align-items:center;
             padding:30px;
-            color:#2a153d;
+            color:var(--ink);
+            box-sizing:border-box;
         }
 
         .wrap{ width:min(1100px, 95vw); display:grid; gap:16px; }
-
         .card{
-            background: rgba(255,255,255,0.90);
+            background: var(--card);
             border-radius: 18px;
             padding: 20px;
-            box-shadow: 0 12px 35px rgba(52,10,88,0.35);
-            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: var(--shadow);
+            border:1px solid var(--stroke);
         }
 
         h2{ margin:0 0 10px 0; font-size: 28px; }
         p{ margin:0; line-height:1.6; }
 
+        /* Werkzeug-Metapher: Tool-Leiste wirkt wie „Werkzeugkasten“ */
         .toolbar{
             display:flex;
             gap:10px;
             flex-wrap:wrap;
             margin-top:14px;
             align-items:center;
+            padding:10px;
+            border-radius:16px;
+            background: rgba(255,255,255,0.55);
+            border:1px solid rgba(120,60,190,0.18);
+            box-shadow: 0 10px 22px rgba(52,10,88,0.08);
         }
 
         button{
@@ -45,18 +59,21 @@
             border-radius:999px;
             padding:10px 14px;
             font-weight:bold;
-            background: linear-gradient(135deg, #a35cff, #6a22cc);
+            background: var(--btn);
             color:white;
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
             transition: filter 0.12s ease, transform 0.12s ease;
             white-space: nowrap;
+            display:flex;
+            align-items:center;
+            gap:8px;
         }
         button:hover{ filter:brightness(1.05); transform: translateY(-1px); }
         button.active{ outline: 3px solid rgba(255,255,255,0.65); }
 
         .btn-secondary{
-            background: rgba(255,255,255,0.90);
-            color:#4a1c7a;
+            background: rgba(255,255,255,0.92);
+            color:var(--ink2);
             border:1px solid rgba(120,60,190,0.25);
             box-shadow: 0 10px 22px rgba(91,25,184,0.12);
         }
@@ -68,13 +85,9 @@
             filter:none !important;
         }
 
-        .hint{
-            margin-top:10px;
-            font-size: 13px;
-            opacity:0.85;
-        }
+        .hint{ margin-top:10px; font-size: 13px; opacity:0.85; }
 
-        /* ✅ SCROLL FIX: max-height + overflow-y:auto */
+        /* Interaktionsfläche (Signifier + Hover): “Hier kannst du arbeiten” */
         .canvas{
             margin-top:14px;
             max-height:560px;
@@ -82,22 +95,27 @@
             overflow-x:hidden;
             border-radius:16px;
             border:2px dashed rgba(110,40,190,0.35);
-            background: rgba(138,74,214,0.08);
+            background:
+                    radial-gradient(circle at 20% 10%, rgba(255,255,255,0.85), rgba(255,255,255,0.65)),
+                    repeating-linear-gradient(45deg, rgba(138,74,214,0.06), rgba(138,74,214,0.06) 10px, rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 20px);
             position:relative;
             user-select:none;
             padding-right:6px;
+            box-shadow: inset 0 0 0 1px rgba(120,60,190,0.18);
+            transition: box-shadow .15s ease, transform .15s ease;
+        }
+        .canvas:hover{
+            box-shadow: inset 0 0 0 2px rgba(163,92,255,0.35), 0 10px 22px rgba(52,10,88,0.10);
+            transform: translateY(-1px);
         }
 
-        /* (optional) hübsche Scrollbar */
+        /* Cursor-Feedback (Pragmatik): wenn Tool aktiv -> Fadenkreuz */
+        .canvas.place-mode{ cursor: crosshair; }
+        .canvas:not(.place-mode){ cursor: default; }
+
         .canvas::-webkit-scrollbar { width: 10px; }
-        .canvas::-webkit-scrollbar-thumb {
-            background: rgba(106,34,204,0.35);
-            border-radius: 999px;
-        }
-        .canvas::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.35);
-            border-radius: 999px;
-        }
+        .canvas::-webkit-scrollbar-thumb { background: rgba(106,34,204,0.35); border-radius: 999px; }
+        .canvas::-webkit-scrollbar-track { background: rgba(255,255,255,0.35); border-radius: 999px; }
 
         .example-grid{
             display:grid;
@@ -120,14 +138,13 @@
         .label{
             font-weight:800;
             font-size:13px;
-            color:#4a1c7a;
+            color:var(--ink2);
             margin-bottom:8px;
         }
 
         .ex-text{ margin:0; line-height:1.5; font-size:14px; }
         .ex-sub{ margin:10px 0 0 0; font-size:12px; opacity:0.85; }
 
-        /* 8 Bilder Grid */
         .img-grid-8{
             display:grid;
             grid-template-columns: 1fr 1fr;
@@ -143,14 +160,11 @@
             display:flex;
             flex-direction:column;
             position:relative;
+            transition: transform .12s ease, box-shadow .12s ease;
         }
+        .img-tile:hover{ transform: translateY(-1px); box-shadow: 0 10px 22px rgba(52,10,88,0.10); }
 
-        .img-tile img{
-            width:100%;
-            height:120px;
-            object-fit:cover;
-            display:block;
-        }
+        .img-tile img{ width:100%; height:120px; object-fit:cover; display:block; }
 
         .tile-footer{
             display:flex;
@@ -162,15 +176,10 @@
             border-top:1px solid rgba(120,60,190,0.18);
             font-size:12px;
             font-weight:800;
-            color:#4a1c7a;
+            color:var(--ink2);
         }
 
-        .choice{
-            display:flex;
-            gap:6px;
-            align-items:center;
-            font-weight:700;
-        }
+        .choice{ display:flex; gap:6px; align-items:center; font-weight:700; }
 
         .chip{
             border:none;
@@ -180,7 +189,7 @@
             font-size:12px;
             font-weight:800;
             background: rgba(255,255,255,0.95);
-            color:#4a1c7a;
+            color:var(--ink2);
             border:1px solid rgba(120,60,190,0.25);
             box-shadow: 0 8px 16px rgba(52,10,88,0.10);
             transition: filter 0.12s ease, transform 0.12s ease;
@@ -192,7 +201,6 @@
             border-color: rgba(120,60,190,0.10);
         }
 
-        /* Reveal Overlay */
         .reveal-tag{
             position:absolute;
             top:10px;
@@ -219,11 +227,13 @@
             cursor:pointer;
             padding:6px 10px;
             border-radius:14px;
-            background: rgba(255,255,255,0.75);
+            background: rgba(255,255,255,0.80);
             border:1px solid rgba(120,60,190,0.25);
             box-shadow:0 10px 22px rgba(52,10,88,0.18);
             z-index: 50;
+            transition: transform .12s ease;
         }
+        .sticker:hover{ transform: translate(-50%, -50%) scale(1.06); }
 
         .footer-row{
             margin-top:12px;
@@ -238,7 +248,7 @@
             display:inline-block;
             text-decoration:none;
             font-weight:bold;
-            color:#4a1c7a;
+            color:var(--ink2);
             padding:10px 0;
         }
 
@@ -255,13 +265,15 @@
 <div class="wrap">
     <div class="card">
         <h2>✨ Lilas Aufgabe – Sticker setzen</h2>
-        <p>Wähle einen Sticker und klicke in die Fläche, um ihn zu platzieren. Sticker anklicken = löschen.</p>
+        <p>Wähle ein Werkzeug (Sticker) und klicke in die Fläche, um es zu platzieren. Sticker anklicken = entfernen.</p>
 
-        <div class="toolbar">
-            <button class="tool" data-sticker="🧬">🧬 Einzigartig</button>
-            <button class="tool" data-sticker="💜">💜 Emotional</button>
-            <button class="tool" data-sticker="✨">✨ KI?</button>
-            <button id="clearAll">🗑️ Alles löschen</button>
+        <div class="toolbar" aria-label="Werkzeuge">
+            <button class="tool" data-sticker="🧬" type="button"><span>🧬</span><span>Einzigartig</span></button>
+            <button class="tool" data-sticker="💜" type="button"><span>💜</span><span>Emotional</span></button>
+            <button class="tool" data-sticker="✨" type="button"><span>✨</span><span>Wirkt wie KI</span></button>
+
+            <button id="undoSticker" class="btn-secondary" type="button" disabled>↩️ Undo</button>
+            <button id="clearAll" class="btn-secondary" type="button">🗑️ Alles löschen</button>
         </div>
 
         <div class="hint">
@@ -269,9 +281,8 @@
             Erst wenn alles gesetzt ist, wird <b>Auflösen</b> aktiv.
         </div>
 
-        <div class="canvas" id="canvas">
+        <div class="canvas" id="canvas" aria-label="Interaktionsfläche (klickbar)">
             <div class="example-grid">
-
                 <div class="example-card">
                     <div class="label">Beispiel A · Text</div>
                     <p class="ex-text">
@@ -302,32 +313,36 @@
 
                     <p class="ex-sub">Tipp: Achte auf Hände, Texturen, Licht, „zu perfekte“ Details, komische Perspektiven.</p>
                 </div>
-
             </div>
         </div>
 
         <div class="footer-row">
             <a class="back" href="lila.html">← Zurück zur Station</a>
-
-            <button class="btn-secondary" type="button" onclick="window.location.href='mateo.html'">
-                ➜ Weiter zu Station 2
-            </button>
+            <button class="btn-secondary" type="button" onclick="window.location.href='mateo.html'">➜ Weiter zu Station 2</button>
         </div>
     </div>
 </div>
 
 <script>
-    // ---------- Sticker System ----------
+    // ---------- Sticker System (mit Undo) ----------
     const canvas = document.getElementById("canvas");
     const clearAll = document.getElementById("clearAll");
+    const undoSticker = document.getElementById("undoSticker");
     const tools = document.querySelectorAll(".tool");
+
     let activeSticker = null;
+    const stickerHistory = []; // Stack für Undo (Inverse Operation)
+
+    function setPlaceMode(on){
+        canvas.classList.toggle("place-mode", on);
+    }
 
     tools.forEach(btn => {
         btn.addEventListener("click", () => {
             tools.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
             activeSticker = btn.dataset.sticker;
+            setPlaceMode(true); // Pragmatik: Cursor sagt “du platzierst jetzt”
         });
     });
 
@@ -347,13 +362,26 @@
         sticker.addEventListener("click", (ev) => {
             ev.stopPropagation();
             sticker.remove();
+            // Entfernen per Klick ist bereits eine inverse Operation (lokal).
         });
 
         canvas.appendChild(sticker);
+
+        // Undo-Stack
+        stickerHistory.push(sticker);
+        undoSticker.disabled = (stickerHistory.length === 0);
+    });
+
+    undoSticker.addEventListener("click", () => {
+        const last = stickerHistory.pop();
+        if (last && last.isConnected) last.remove();
+        undoSticker.disabled = (stickerHistory.length === 0);
     });
 
     clearAll.addEventListener("click", () => {
         canvas.querySelectorAll(".sticker").forEach(s => s.remove());
+        stickerHistory.length = 0;
+        undoSticker.disabled = true;
     });
 
     // ---------- Bild-Quiz System (8 Bilder) ----------
@@ -361,7 +389,6 @@
     const revealBtn = document.getElementById("revealBtn");
     const resetQuiz = document.getElementById("resetQuiz");
 
-    // Wahrheitstabelle (wie du gesagt hast)
     const images = [
         { file: "./Bildschirmfoto%202026-01-22%20um%2020.54.13.png", truth: "KI" },
         { file: "./Bildschirmfoto%202026-01-22%20um%2020.54.19.png", truth: "KI" },
@@ -443,9 +470,7 @@
 
     function renderGrid(){
         grid8.innerHTML = "";
-        images.forEach((_, idx) => {
-            grid8.appendChild(createTile(idx));
-        });
+        images.forEach((_, idx) => grid8.appendChild(createTile(idx)));
         updateRevealButton();
     }
 
@@ -479,7 +504,6 @@
 
     revealBtn.addEventListener("click", reveal);
     resetQuiz.addEventListener("click", resetAll);
-
     renderGrid();
 </script>
 </body>

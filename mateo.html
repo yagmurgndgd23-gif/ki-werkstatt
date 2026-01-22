@@ -4,53 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Station 2 – Mateo</title>
-
     <style>
         body{
-            margin:0;
-            font-family: Arial, sans-serif;
+            margin:0; font-family: Arial, sans-serif;
             background: radial-gradient(circle at top, #e8dcff 0%, #c7a6ff 50%, #7a38b6 100%);
-            min-height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            padding:30px;
-            color:#2a153d;
+            min-height:100vh; display:flex; justify-content:center; align-items:center;
+            padding:30px; color:#2a153d; box-sizing:border-box;
         }
         .wrap{ width:min(1100px, 95vw); display:grid; gap:16px; }
         .card{
             background: rgba(255,255,255,0.90);
-            border-radius: 18px;
-            padding: 22px;
+            border-radius: 18px; padding: 22px;
             box-shadow: 0 12px 35px rgba(52,10,88,0.35);
             border:1px solid rgba(120,60,190,0.25);
         }
         .nav{ display:flex; gap:10px; flex-wrap:wrap; }
         .pill{
-            padding:8px 12px;
-            border-radius:999px;
-            text-decoration:none;
-            font-weight:bold;
-            font-size:13px;
+            padding:8px 12px; border-radius:999px; text-decoration:none;
+            font-weight:bold; font-size:13px;
             background: rgba(255,255,255,0.80);
-            color:#4a1c7a;
-            border:1px solid rgba(120,60,190,0.20);
+            color:#4a1c7a; border:1px solid rgba(120,60,190,0.20);
             box-shadow: 0 10px 22px rgba(52,10,88,0.10);
         }
-        .pill.active{
-            background: linear-gradient(135deg, #a35cff, #6a22cc);
-            color:white;
-            border-color: rgba(255,255,255,0.25);
-        }
+        .pill.active{ background: linear-gradient(135deg, #a35cff, #6a22cc); color:white; }
         h1{ margin:12px 0 10px 0; }
         p{ margin:10px 0; line-height:1.6; }
         .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
         a.btn{
-            padding: 12px 18px;
-            border-radius:14px;
-            text-decoration:none;
-            color:white;
-            font-weight:bold;
+            padding: 12px 18px; border-radius:14px; text-decoration:none;
+            color:white; font-weight:bold;
             background: linear-gradient(135deg, #a35cff, #5b19b8);
             box-shadow: 0 10px 22px rgba(91,25,184,0.35);
             display:inline-block;
@@ -58,13 +40,11 @@
         a.btn:hover{ filter:brightness(1.05); }
         a.btn.secondary{
             background: rgba(255,255,255,0.92);
-            color:#4a1c7a;
-            border:1px solid rgba(120,60,190,0.25);
+            color:#4a1c7a; border:1px solid rgba(120,60,190,0.25);
             box-shadow: 0 10px 22px rgba(91,25,184,0.15);
         }
     </style>
 </head>
-
 <body>
 <div class="wrap">
     <div class="card">
@@ -79,9 +59,8 @@
         <h1>⚠️ Station 2 – Mateos Manipulationslabyrinth</h1>
 
         <p><b>Beschreibung:</b> Mateo ist 15 und ständig mit KI-Influencern konfrontiert. Manche machen ihn unsicher.</p>
-        <p><b>Ziel:</b> Lerne zu erkennen, wenn KI dich beeinflusst.</p>
-        <p><b>Aufgabe:</b> Ordne Szenen zu: <b>Echt</b>, <b>KI-generiert</b> oder <b>Manipulativ</b>.</p>
-        <p><b>Frage:</b> Wie schützt du dich in Zukunft vor solchen Tricks?</p>
+        <p><b>Ziel:</b> Lerne, ob eine Szene <b>echt</b>, <b>KI-generiert</b> oder <b>manipulativ</b> ist.</p>
+        <p><b>Aufgabe:</b> Ordne Szenen zu und beobachte: Welche Zeichen (Wortwahl, Druck, Perfektion) wirken „verdächtig“?</p>
 
         <div class="row">
             <a class="btn" href="mateo_aufgabe.html">✨ Zur Aufgabe</a>

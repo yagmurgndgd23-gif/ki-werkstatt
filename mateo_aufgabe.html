@@ -299,8 +299,8 @@
 
         <h2>⚠️ Station 2 – Mateos Manipulationslabyrinth</h2>
         <p>
-            <b>Aufgabe:</b> Schau dir die <b>6 Aufgaben-Kacheln</b> an (3 Text-Szenen + 3 Screenshots).
-            Wähle eine Kachel und ordne zu: ✔ Echt / 🤖 KI-generiert / ⚠️ Manipulativ / ➖ Neutral.
+            <b>Aufgabe:</b> 6 Kacheln (3 Text-Szenen + 3 Screenshots).
+            Wähle eine Kachel und ordne zu: ✔ Echt / 🤖 KI / ⚠️ Manipulativ / ➖ Neutral.
             <br><b>Reversibilität:</b> ↩️ Undo macht den letzten Schritt rückgängig.
         </p>
 
@@ -321,36 +321,36 @@
                 <p class="scene-text">„Bin gerade am See. Das Wetter ist mies, aber egal. 😂“</p>
             </div>
 
-            <!-- SCREENSHOTS 1–3 -->
+            <!-- SCREENSHOTS 1–3 (ROOT!) -->
             <div class="scene" data-kind="img" data-id="S1"
-                 data-img="public/Bildschirmfoto%202026-01-22%20um%2022.51.45.png"
-                 data-imgtitle="Screenshot 1 – Social-Profil / Influencer">
+                 data-img="shot1.png"
+                 data-imgtitle="Screenshot 1">
                 <div class="scene-title">Screenshot 1 <span class="tag">Bild</span></div>
-                <p class="scene-text">Klicke zum Vergrößern. Ordne dann ein: Echt / KI / Manipulativ / Neutral.</p>
+                <p class="scene-text">Klicke zum Vergrößern und ordne zu.</p>
                 <div class="shot" role="button" tabindex="0" aria-label="Screenshot 1 öffnen">
-                    <img src="public/Bildschirmfoto%202026-01-22%20um%2022.51.45.png" alt="Screenshot 1">
+                    <img src="shot1.png" alt="Screenshot 1">
                     <div class="shot-caption">Bild öffnen (klicken)</div>
                 </div>
             </div>
 
             <div class="scene" data-kind="img" data-id="S2"
-                 data-img="public/Bildschirmfoto%202026-01-22%20um%2022.51.55.png"
-                 data-imgtitle="Screenshot 2 – Post/Tweet mit Bild">
+                 data-img="shot2.png"
+                 data-imgtitle="Screenshot 2">
                 <div class="scene-title">Screenshot 2 <span class="tag">Bild</span></div>
-                <p class="scene-text">Klicke zum Vergrößern. Ordne dann ein: Echt / KI / Manipulativ / Neutral.</p>
+                <p class="scene-text">Klicke zum Vergrößern und ordne zu.</p>
                 <div class="shot" role="button" tabindex="0" aria-label="Screenshot 2 öffnen">
-                    <img src="public/Bildschirmfoto%202026-01-22%20um%2022.51.55.png" alt="Screenshot 2">
+                    <img src="shot2.png" alt="Screenshot 2">
                     <div class="shot-caption">Bild öffnen (klicken)</div>
                 </div>
             </div>
 
             <div class="scene" data-kind="img" data-id="S3"
-                 data-img="public/Bildschirmfoto%202026-01-22%20um%2022.52.04.png"
-                 data-imgtitle="Screenshot 3 – Link-in-Bio / Promo-Seite">
+                 data-img="shot3.png"
+                 data-imgtitle="Screenshot 3">
                 <div class="scene-title">Screenshot 3 <span class="tag">Bild</span></div>
-                <p class="scene-text">Klicke zum Vergrößern. Ordne dann ein: Echt / KI / Manipulativ / Neutral.</p>
+                <p class="scene-text">Klicke zum Vergrößern und ordne zu.</p>
                 <div class="shot" role="button" tabindex="0" aria-label="Screenshot 3 öffnen">
-                    <img src="public/Bildschirmfoto%202026-01-22%20um%2022.52.04.png" alt="Screenshot 3">
+                    <img src="shot3.png" alt="Screenshot 3">
                     <div class="shot-caption">Bild öffnen (klicken)</div>
                 </div>
             </div>
@@ -430,7 +430,7 @@
     let selectedScene = null;
 
     // Undo Stack = inverse Operationen
-    const history = []; // functions
+    const history = [];
 
     function clearSelection(){
         scenes.forEach(s => s.classList.remove("selected"));

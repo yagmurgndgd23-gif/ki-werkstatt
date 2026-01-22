@@ -4,48 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KI-WERKSTATT</title>
-
     <style>
+        :root{
+            --bg1:#e8dcff; --bg2:#c7a6ff; --bg3:#7a38b6;
+            --ink:#2a153d; --ink2:#4a1c7a;
+            --card:rgba(255,255,255,0.90);
+            --stroke:rgba(120,60,190,0.25);
+            --shadow:0 12px 35px rgba(52,10,88,0.35);
+            --btn: linear-gradient(135deg, #a35cff, #5b19b8);
+            --btn2: linear-gradient(135deg, #a35cff, #6a22cc);
+        }
         body{
             margin:0;
             font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, #e8dcff 0%, #c7a6ff 50%, #7a38b6 100%);
+            background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
             min-height:100vh;
             display:flex;
             justify-content:center;
             align-items:center;
-            color:#2a153d;
+            color:var(--ink);
             padding:30px;
+            box-sizing:border-box;
         }
-
-        .wrap{
-            width:min(1100px, 95vw);
-            display:grid;
-            gap:16px;
-        }
-
+        .wrap{ width:min(1100px, 95vw); display:grid; gap:16px; }
         .card{
-            background: rgba(255,255,255,0.90);
+            background: var(--card);
             border-radius: 18px;
             padding: 24px;
-            box-shadow: 0 12px 35px rgba(52,10,88,0.35);
-            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: var(--shadow);
+            border:1px solid var(--stroke);
         }
-
-        .hero{
-            text-align:center;
-        }
-
-        h1{
-            margin: 0 0 12px 0;
-            font-size: 46px;
-            letter-spacing: 1px;
-        }
-
-        p{
-            margin: 10px 0;
-            line-height:1.6;
-        }
+        .hero{ text-align:center; }
+        h1{ margin: 0 0 12px 0; font-size: 46px; letter-spacing: 1px; }
+        p{ margin: 10px 0; line-height:1.6; }
 
         .grid{
             display:grid;
@@ -53,7 +44,6 @@
             gap:12px;
             margin-top: 14px;
         }
-
         .tile{
             background: rgba(255,255,255,0.75);
             border:1px solid rgba(120,60,190,0.18);
@@ -64,19 +54,21 @@
             flex-direction:column;
             gap:10px;
             min-height: 165px;
+            position:relative;
+            overflow:hidden;
         }
-
-        .tile h2{
-            margin:0;
-            font-size:16px;
-            color:#4a1c7a;
+        .tile::before{
+            content:"";
+            position:absolute;
+            inset:-40px -40px auto auto;
+            width:120px; height:120px;
+            background: rgba(163,92,255,0.12);
+            transform: rotate(18deg);
+            border-radius: 24px;
+            filter: blur(0.2px);
         }
-
-        .tile p{
-            margin:0;
-            font-size:14px;
-            opacity:0.95;
-        }
+        .tile h2{ margin:0; font-size:16px; color:var(--ink2); position:relative; }
+        .tile p{ margin:0; font-size:14px; opacity:0.95; position:relative; }
 
         a.btn{
             margin-top:auto;
@@ -86,15 +78,16 @@
             text-decoration:none;
             color:white;
             font-weight:bold;
-            background: linear-gradient(135deg, #a35cff, #5b19b8);
+            background: var(--btn);
             box-shadow: 0 10px 22px rgba(91,25,184,0.30);
             text-align:center;
+            position:relative;
         }
         a.btn:hover{ filter:brightness(1.05); }
 
         a.btn.secondary{
             background: rgba(255,255,255,0.92);
-            color:#4a1c7a;
+            color:var(--ink2);
             border:1px solid rgba(120,60,190,0.25);
             box-shadow: 0 10px 22px rgba(91,25,184,0.15);
         }
@@ -124,19 +117,22 @@
         }
     </style>
 </head>
-
 <body>
 <div class="wrap">
-
     <div class="card hero">
         <h1>⭐ KI-WERKSTATT</h1>
         <p>Entdecke, wie KI Kreativität verändert, wie sie manipulieren kann und wie wir sie sinnvoll nutzen.</p>
         <p><b>In drei Stationen</b> lernst du Lila, Mateo und Yara kennen und entscheidest, wie KI ihnen helfen kann.</p>
-
+        <div class="flow">
+            <span class="chip">🎨 Kreativität</span>
+            <span class="chip">⚠️ Manipulation</span>
+            <span class="chip">📚 Regeln & Fairness</span>
+            <span class="chip">⭐ Erkenntnisse sammeln</span>
+        </div>
+    </div>
 
     <div class="card">
         <div class="grid">
-
             <div class="tile">
                 <h2>🎨 Station 1 – Lilas Kreativlabor</h2>
                 <p>Kreativität vs. KI: Was wirkt einzigartig menschlich?</p>
@@ -160,7 +156,6 @@
                 <p>Dein Lernmoment + Regel + Idee an die Wand pinnen.</p>
                 <a class="btn" href="abschluss.html">Abschluss öffnen →</a>
             </div>
-
         </div>
 
         <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
@@ -168,7 +163,6 @@
             <a class="btn secondary" href="lila_aufgabe.html">Direkt zur Demo (Lila Aufgabe)</a>
         </div>
     </div>
-
 </div>
 </body>
 </html>
