@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lila – Aufgabe (Sticker setzen)</title>
+
+    <style>
+        body{
+            margin:0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top, #e8dcff 0%, #c7a6ff 45%, #7a38b6 100%);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:30px;
+            color:#2a153d;
+        }
+
+        .wrap{
+            width:min(1100px, 95vw);
+            display:grid;
+            gap:16px;
+        }
+
+        .card{
+            background: rgba(255,255,255,0.90);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 12px 35px rgba(52,10,88,0.35);
+            border:1px solid rgba(120,60,190,0.25);
+        }
+
+        h2{
+            margin:0 0 10px 0;
+            font-size: 28px;
+        }
+
+        p{
+            margin:0;
+            line-height:1.6;
+        }
+
+        .toolbar{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-top:14px;
+            align-items:center;
+        }
+
+        button{
+            border:none;
+            cursor:pointer;
+            border-radius:999px;
+            padding:10px 14px;
+            font-weight:bold;
+            background: linear-gradient(135deg, #a35cff, #6a22cc);
+            color:white;
+            box-shadow: 0 10px 22px rgba(91,25,184,0.25);
+            transition: filter 0.12s ease, transform 0.12s ease;
+        }
+
+        button:hover{
+            filter:brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        button.active{
+            outline: 3px solid rgba(255,255,255,0.65);
+        }
+
+        .hint{
+            margin-top:10px;
+            font-size: 13px;
+            opacity:0.85;
+        }
+
+        .canvas{
+            margin-top:14px;
+            height:520px;
+            border-radius:16px;
+            border:2px dashed rgba(110,40,190,0.35);
+            background: rgba(138,74,214,0.08);
+            position:relative;
+            overflow:hidden;
+            user-select:none;
+        }
+
+        .example-grid{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap:12px;
+            padding:12px;
+            height:100%;
+            box-sizing:border-box;
+        }
+
+        .example-card{
+            background: rgba(255,255,255,0.75);
+            border:1px solid rgba(120,60,190,0.18);
+            border-radius:14px;
+            padding:12px;
+            box-shadow: 0 10px 22px rgba(52,10,88,0.10);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .label{
+            font-weight:800;
+            font-size:13px;
+            color:#4a1c7a;
+            margin-bottom:8px;
+        }
+
+        .ex-text{
+            margin:0;
+            line-height:1.5;
+            font-size:14px;
+        }
+
+        .ex-sub{
+            margin:10px 0 0 0;
+            font-size:12px;
+            opacity:0.85;
+        }
+
+        /* Bildvergleich */
+        .img-grid{
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap:10px;
+            margin-top:10px;
+        }
+
+        .img-card{
+            border-radius:12px;
+            border:2px dashed rgba(110,40,190,0.22);
+            background: rgba(138,74,214,0.10);
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+        }
+
+        .img-card img{
+            width:100%;
+            height:140px;
+            object-fit:cover;
+            display:block;
+        }
+
+        .img-cap{
+            padding:8px 10px;
+            font-size:12px;
+            font-weight:800;
+            color:#4a1c7a;
+            background: rgba(255,255,255,0.75);
+            border-top:1px solid rgba(120,60,190,0.18);
+        }
+
+        /* Sticker */
+        .sticker{
+            position:absolute;
+            transform: translate(-50%, -50%);
+            font-size:28px;
+            cursor:pointer;
+            padding:6px 10px;
+            border-radius:14px;
+            background: rgba(255,255,255,0.75);
+            border:1px solid rgba(120,60,190,0.25);
+            box-shadow:0 10px 22px rgba(52,10,88,0.18);
+            z-index: 50;
+        }
+
+        a.back{
+            display:inline-block;
+            margin-top:12px;
+            text-decoration:none;
+            font-weight:bold;
+            color:#4a1c7a;
+        }
+
+        @media (max-width: 900px){
+            .example-grid{ grid-template-columns: 1fr; height:auto; }
+            .canvas{ height:auto; min-height:520px; }
+            .img-grid{ grid-template-columns: 1fr; }
+            .img-card img{ height:180px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    <div class="card">
+        <h2>✨ Lilas Aufgabe – Sticker setzen</h2>
+        <p>Wähle einen Sticker und klicke in die Fläche, um ihn zu platzieren. Sticker anklicken = löschen.</p>
+
+        <div class="toolbar">
+            <button class="tool" data-sticker="🧬">🧬 Einzigartig</button>
+            <button class="tool" data-sticker="💜">💜 Emotional</button>
+            <button class="tool" data-sticker="✨">✨ KI</button>
+            <button id="clearAll">🗑️ Alles löschen</button>
+        </div>
+
+        <div class="hint">Tipp: Klebe Sticker auf Textstellen oder direkt auf die Bilder (Echt vs. KI).</div>
+
+        <div class="canvas" id="canvas">
+            <div class="example-grid">
+
+                <div class="example-card">
+                    <div class="label">Beispiel A · eher menschlich (Text)</div>
+                    <p class="ex-text">
+                        „Ich hab heute beim Zeichnen gemerkt, dass meine Linie wackelt, wenn ich gestresst bin.
+                        Aber genau das fühlt sich nach mir an, wie ein Tagebucheintrag in Strichen.“
+                    </p>
+                    <p class="ex-sub">Markiere die Stelle, die besonders individuell wirkt.</p>
+                </div>
+
+                <div class="example-card">
+                    <div class="label">Beispiel B · eher KI-typisch (Text)</div>
+                    <p class="ex-text">
+                        „Kreativität ist ein wichtiger Prozess, der durch unterschiedliche Techniken gefördert werden kann.
+                        Es empfiehlt sich, regelmäßig zu üben und Inspiration aus verschiedenen Quellen zu nutzen.“
+                    </p>
+                    <p class="ex-sub">Markiere die Stelle, die generisch/glatt wirkt.</p>
+                </div>
+
+                <div class="example-card">
+                    <div class="label">Beispiel C · Bildvergleich (Echt vs. KI)</div>
+
+                    <div class="img-grid">
+                        <div class="img-card">
+                            <img src="lila_beispiel_echt.png" alt="Echtes Foto (Katzenbild)" />
+                            <div class="img-cap">📷 Echt (Foto)</div>
+                        </div>
+
+                        <div class="img-card">
+                            <img src="lila_beispiel_ki.png" alt="KI-generiertes Beispielbild" />
+                            <div class="img-cap">🤖 KI-Beispiel</div>
+                        </div>
+                    </div>
+
+                    <p class="ex-sub">Klebe Sticker auf Details: Was wirkt menschlich? Was wirkt künstlich?</p>
+                </div>
+
+            </div>
+        </div>
+
+        <a class="back" href="lila.html">← Zurück zur Station</a>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById("canvas");
+    const clearAll = document.getElementById("clearAll");
+    const tools = document.querySelectorAll(".tool");
+
+    let activeSticker = null;
+
+    tools.forEach(btn => {
+        btn.addEventListener("click", () => {
+            tools.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            activeSticker = btn.dataset.sticker;
+        });
+    });
+
+    canvas.addEventListener("click", (e) => {
+        if (!activeSticker) return;
+
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const sticker = document.createElement("div");
+        sticker.className = "sticker";
+        sticker.textContent = activeSticker;
+        sticker.style.left = x + "px";
+        sticker.style.top = y + "px";
+
+        sticker.addEventListener("click", (ev) => {
+            ev.stopPropagation();
+            sticker.remove();
+        });
+
+        canvas.appendChild(sticker);
+    });
+
+    clearAll.addEventListener("click", () => {
+        canvas.querySelectorAll(".sticker").forEach(s => s.remove());
+    });
+</script>
+</body>
+</html>
