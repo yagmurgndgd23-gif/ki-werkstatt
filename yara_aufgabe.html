@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Station 3 – Yara (Aufgabe)</title>
+
+    <style>
+        html, body{
+            margin:0;
+            padding:0;
+            font-family: Arial, sans-serif;
+            background: radial-gradient(circle at top, #e8dcff 0%, #c7a6ff 50%, #7a38b6 100%);
+            color:#2a153d;
+        }
+
+        body{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:flex-start;
+            padding:30px;
+            box-sizing:border-box;
+        }
+
+        .wrap{
+            width:min(1100px, 95vw);
+            display:grid;
+            gap:16px;
+        }
+
+        .card{
+            background: rgba(255,255,255,0.90);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 12px 35px rgba(52,10,88,0.35);
+            border:1px solid rgba(120,60,190,0.25);
+        }
+
+        h2{ margin:0 0 10px 0; font-size:28px; }
+        p{ margin:0; line-height:1.6; }
+
+        .toolbar{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-top:14px;
+            align-items:center;
+        }
+
+        button{
+            border:none;
+            cursor:pointer;
+            border-radius:999px;
+            padding:10px 14px;
+            font-weight:bold;
+            background: linear-gradient(135deg, #a35cff, #6a22cc);
+            color:white;
+            box-shadow: 0 10px 22px rgba(91,25,184,0.25);
+            transition: filter 0.12s ease, transform 0.12s ease;
+        }
+        button:hover{
+            filter:brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        /* Textbereich */
+        .paper{
+            margin-top:14px;
+            border-radius:16px;
+            border:2px dashed rgba(110,40,190,0.30);
+            background: rgba(255,255,255,0.70);
+            padding:16px;
+            line-height:1.85;
+            font-size:16px;
+
+            max-height: 460px;
+            overflow-y: auto;
+        }
+
+        /* Tokens (Wörter + Satzzeichen) */
+        .token{
+            cursor:pointer;
+            padding:1px 2px;
+            border-radius:6px;
+            background: transparent;
+            transition: background 0.12s ease;
+            display:inline-block;
+        }
+
+        /* Optional: minimaler Hover, sehr unauffällig */
+        .token:hover{
+            background: rgba(0,0,0,0.04);
+        }
+
+        /* Markierung erst nach Klick */
+        .token.active{
+            background: rgba(255, 230, 120, 0.88);
+        }
+
+        /* Schöne Absätze */
+        .para{ margin: 16px 0; }
+
+        .hint{
+            margin-top:10px;
+            font-size:13px;
+            opacity:0.85;
+        }
+
+        .links{
+            margin-top:12px;
+            display:flex;
+            gap:14px;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        a.link{
+            text-decoration:none;
+            font-weight:bold;
+            color:#4a1c7a;
+        }
+
+        a.primary{
+            padding:10px 14px;
+            border-radius:999px;
+            color:white;
+            background: linear-gradient(135deg, #a35cff, #5b19b8);
+            box-shadow: 0 10px 22px rgba(91,25,184,0.25);
+        }
+        a.primary:hover{ filter:brightness(1.05); }
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    <div class="card">
+        <h2>📚 Yaras Aufgabe – Hinweise markieren</h2>
+        <p>Markiere einzelne Wörter oder Zeichen (z.B. „Zusammenfassend“, „sehr“, „—“, „.“). Klick = markieren / Klick nochmal = entfernen.</p>
+
+        <div class="toolbar">
+            <button id="reset" type="button">🗑️ Reset</button>
+        </div>
+
+        <div class="paper">
+            <b>Beispieltext (gemischt):</b><br><br>
+
+            <!-- Hier steht der Text "normal" drin, wird per JS in Tokens umgebaut -->
+            <div id="tokenText">
+                Künstliche Intelligenz ist ein sehr wichtiges Thema, das in vielen Bereichen Anwendung findet.
+                Es gibt zahlreiche Vorteile, die durch den Einsatz von KI entstehen können. Gleichzeitig sollte man jedoch auch Herausforderungen berücksichtigen.
+
+                Ich habe gestern gemerkt, dass ich beim Schreiben oft viel zu spät anfange.
+                Dann nehme ich Abkürzungen — und manchmal wäre Hilfe ganz gut.
+                Dabei ist es wichtig, verantwortungsvoll mit der Technologie umzugehen, denn KI kann sowohl positive als auch negative Effekte haben.
+
+                Zusammenfassend lässt sich sagen, dass KI eine bedeutende Rolle spielt und man sie sinnvoll nutzen sollte.
+            </div>
+        </div>
+
+        <div class="hint">
+            Typische Hinweise: sehr allgemeine Wörter („wichtig“, „zahlreich“), perfekte Struktur, Floskeln („Zusammenfassend…“), wenig echte Beispiele.
+        </div>
+
+        <div class="links">
+            <a class="link primary" href="abschluss.html">Weiter → Wand der Erkenntnisse</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const resetBtn = document.getElementById("reset");
+    const tokenText = document.getElementById("tokenText");
+
+    // Zerlegt Text in Tokens: Wörter ODER einzelne Zeichen (Satzzeichen, Gedankenstrich, etc.)
+    // - \p{L}\p{N} = Buchstaben/Zahlen (Unicode)
+    // - alles andere, was kein Leerzeichen ist, wird einzelnes Token
+    function tokenize(line) {
+        // Beispiele:
+        // "Abkürzungen — und" -> ["Abkürzungen", "—", "und"]
+        // "Thema," -> ["Thema", ","]
+        return line.match(/[\p{L}\p{N}]+|[^\s\p{L}\p{N}]/gu) || [];
+    }
+
+    // Baut HTML: jede Zeile -> Absatz, jedes Token -> klickbarer span
+    function renderTokenizedText() {
+        const raw = tokenText.textContent;
+        const lines = raw.split("\n");
+
+        const container = document.createElement("div");
+
+        lines.forEach(line => {
+            const trimmed = line.trim();
+
+            // Leerzeile = Absatz-Abstand
+            if (trimmed.length === 0) {
+                const spacer = document.createElement("div");
+                spacer.className = "para";
+                container.appendChild(spacer);
+                return;
+            }
+
+            const tokens = tokenize(trimmed);
+            const p = document.createElement("div");
+            p.className = "para";
+
+            tokens.forEach((t, idx) => {
+                const span = document.createElement("span");
+                span.className = "token";
+                span.textContent = t;
+
+                // Toggle Markierung
+                span.addEventListener("click", () => {
+                    span.classList.toggle("active");
+                });
+
+                p.appendChild(span);
+
+                // Abstände: zwischen "Wort Wort" ja, aber vor Satzzeichen nicht
+                // Heuristik: Wenn nächstes Token ein Satzzeichen ist -> kein Space
+                const next = tokens[idx + 1];
+
+                const isPunct = (x) => x && /[^\p{L}\p{N}]/u.test(x); // kein Buchstabe/Zahl => punctuation/symbol
+                if (next && !isPunct(next)) {
+                    p.appendChild(document.createTextNode(" "));
+                }
+            });
+
+            container.appendChild(p);
+        });
+
+        // Ersetze Originalinhalt
+        tokenText.innerHTML = "";
+        tokenText.appendChild(container);
+    }
+
+    // Reset: alle aktiven Tokens entfernen
+    resetBtn.addEventListener("click", () => {
+        document.querySelectorAll(".token.active").forEach(t => t.classList.remove("active"));
+    });
+
+    // Initial render
+    renderTokenizedText();
+</script>
+</body>
+</html>
