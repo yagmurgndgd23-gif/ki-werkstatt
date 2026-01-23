@@ -1,5 +1,3 @@
-<!-- deploy-test-123 -->
-
 <!doctype html>
 <html lang="de">
 <head>
@@ -8,18 +6,29 @@
     <title>KI-WERKSTATT</title>
     <style>
         :root{
-            --bg1:#e8dcff; --bg2:#c7a6ff; --bg3:#7a38b6;
-            --ink:#2a153d; --ink2:#4a1c7a;
-            --card:rgba(255,255,255,0.90);
-            --stroke:rgba(120,60,190,0.25);
-            --shadow:0 12px 35px rgba(52,10,88,0.35);
-            --btn: linear-gradient(135deg, #a35cff, #5b19b8);
-            --btn2: linear-gradient(135deg, #a35cff, #6a22cc);
+            /* monochrom base */
+            --bg0:#0e0f12;
+            --bg1:#15171c;
+            --card:#ffffff;
+            --card2:#f7f7f9;
+            --stroke:rgba(0,0,0,0.12);
+            --ink:#0f1115;
+            --muted:#3b3f48;
+            --shadow:0 14px 40px rgba(0,0,0,0.35);
+
+            /* accents */
+            --lila1:#7c3aed; --lila2:#a855f7;
+            --mateo1:#2563eb; --mateo2:#60a5fa;
+            --yara1:#f59e0b; --yara2:#f97316;
+            --neutral1:#111827; --neutral2:#374151;
         }
+
         body{
             margin:0;
             font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
+            background:
+                    radial-gradient(circle at top, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 55%),
+                    linear-gradient(180deg, var(--bg0), var(--bg1));
             min-height:100vh;
             display:flex;
             justify-content:center;
@@ -28,17 +37,21 @@
             padding:30px;
             box-sizing:border-box;
         }
+
         .wrap{ width:min(1100px, 95vw); display:grid; gap:16px; }
+
         .card{
-            background: var(--card);
+            background: rgba(255,255,255,0.95);
             border-radius: 18px;
             padding: 24px;
             box-shadow: var(--shadow);
-            border:1px solid var(--stroke);
+            border:1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(6px);
         }
+
         .hero{ text-align:center; }
-        h1{ margin: 0 0 12px 0; font-size: 46px; letter-spacing: 1px; }
-        p{ margin: 10px 0; line-height:1.6; }
+        h1{ margin: 0 0 12px 0; font-size: 46px; letter-spacing: 1px; color:#0b0d12; }
+        p{ margin: 10px 0; line-height:1.6; color:var(--muted); }
 
         .grid{
             display:grid;
@@ -46,12 +59,13 @@
             gap:12px;
             margin-top: 14px;
         }
+
         .tile{
-            background: rgba(255,255,255,0.75);
-            border:1px solid rgba(120,60,190,0.18);
+            background: rgba(255,255,255,0.96);
+            border:1px solid rgba(0,0,0,0.10);
             border-radius: 16px;
             padding: 14px;
-            box-shadow: 0 10px 22px rgba(52,10,88,0.10);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
             display:flex;
             flex-direction:column;
             gap:10px;
@@ -59,18 +73,25 @@
             position:relative;
             overflow:hidden;
         }
+
         .tile::before{
             content:"";
             position:absolute;
-            inset:-40px -40px auto auto;
-            width:120px; height:120px;
-            background: rgba(163,92,255,0.12);
+            inset:-50px -50px auto auto;
+            width:140px; height:140px;
+            background: rgba(0,0,0,0.06);
             transform: rotate(18deg);
-            border-radius: 24px;
-            filter: blur(0.2px);
+            border-radius: 26px;
         }
-        .tile h2{ margin:0; font-size:16px; color:var(--ink2); position:relative; }
-        .tile p{ margin:0; font-size:14px; opacity:0.95; position:relative; }
+
+        .tile h2{ margin:0; font-size:16px; position:relative; }
+        .tile p{ margin:0; font-size:14px; opacity:0.95; position:relative; color:var(--muted); }
+
+        /* Per-tile accents */
+        .accent-lila h2{ color: var(--lila1); }
+        .accent-mateo h2{ color: var(--mateo1); }
+        .accent-yara h2{ color: var(--yara1); }
+        .accent-neutral h2{ color: #111827; }
 
         a.btn{
             margin-top:auto;
@@ -80,34 +101,24 @@
             text-decoration:none;
             color:white;
             font-weight:bold;
-            background: var(--btn);
-            box-shadow: 0 10px 22px rgba(91,25,184,0.30);
             text-align:center;
             position:relative;
+            box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+            transition: filter .12s ease, transform .12s ease;
         }
-        a.btn:hover{ filter:brightness(1.05); }
+        a.btn:hover{ filter:brightness(1.04); transform: translateY(-1px); }
+
+        /* matching button gradients */
+        .btn-lila{ background: linear-gradient(135deg, var(--lila1), var(--lila2)); }
+        .btn-mateo{ background: linear-gradient(135deg, var(--mateo1), var(--mateo2)); }
+        .btn-yara{ background: linear-gradient(135deg, var(--yara1), var(--yara2)); }
+        .btn-neutral{ background: linear-gradient(135deg, var(--neutral1), var(--neutral2)); }
 
         a.btn.secondary{
-            background: rgba(255,255,255,0.92);
-            color:var(--ink2);
-            border:1px solid rgba(120,60,190,0.25);
-            box-shadow: 0 10px 22px rgba(91,25,184,0.15);
-        }
-
-        .flow{
-            display:flex;
-            justify-content:center;
-            gap:10px;
-            flex-wrap:wrap;
-            margin-top: 12px;
-            font-size:13px;
-            opacity:0.9;
-        }
-        .chip{
-            padding:6px 10px;
-            border-radius:999px;
-            background: rgba(138,74,214,0.12);
-            border:1px solid rgba(110,40,190,0.15);
+            background: rgba(255,255,255,0.96);
+            color:#111827;
+            border:1px solid rgba(0,0,0,0.14);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
         }
 
         @media (max-width: 1000px){
@@ -129,33 +140,33 @@
 
     <div class="card">
         <div class="grid">
-            <div class="tile">
+            <div class="tile accent-lila">
                 <h2>🎨 Station 1 – Lilas Kreativlabor</h2>
                 <p>Kreativität vs. KI: Was wirkt einzigartig menschlich?</p>
-                <a class="btn" href="lila.html">Station 1 öffnen →</a>
+                <a class="btn btn-lila" href="lila.html">Station 1 öffnen →</a>
             </div>
 
-            <div class="tile">
+            <div class="tile accent-mateo">
                 <h2>⚠️ Station 2 – Mateos Manipulationslabyrinth</h2>
                 <p>Echt, KI oder manipulativ? Lerne Tricks zu erkennen.</p>
-                <a class="btn" href="mateo.html">Station 2 öffnen →</a>
+                <a class="btn btn-mateo" href="mateo.html">Station 2 öffnen →</a>
             </div>
 
-            <div class="tile">
+            <div class="tile accent-yara">
                 <h2>📚 Station 3 – Yaras Klassenchaos</h2>
                 <p>KI-Texte erkennen und faire Regeln entwickeln.</p>
-                <a class="btn" href="yara.html">Station 3 öffnen →</a>
+                <a class="btn btn-yara" href="yara.html">Station 3 öffnen →</a>
             </div>
 
-            <div class="tile">
+            <div class="tile accent-neutral">
                 <h2>⭐ Wand der Erkenntnisse</h2>
                 <p>Dein Lernmoment + Regel + Idee an die Wand pinnen.</p>
-                <a class="btn" href="abschluss.html">Abschluss öffnen →</a>
+                <a class="btn btn-neutral" href="abschluss.html">Abschluss öffnen →</a>
             </div>
         </div>
 
         <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
-            <a class="btn" href="lila.html">Start im Flow → Station 1</a>
+            <a class="btn btn-lila" href="lila.html">Start im Flow → Station 1</a>
             <a class="btn secondary" href="lila_aufgabe.html">Direkt zur Demo (Lila Aufgabe)</a>
         </div>
     </div>

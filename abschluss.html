@@ -6,16 +6,46 @@
     <title>KI-Wand der Erkenntnisse</title>
 
     <style>
-        body{
+        :root{
+            /* === YARA-FARBPALETTE (wie deine Station 3 Seiten) === */
+            --bg-a: #e8dcff;
+            --bg-b: #c7a6ff;
+            --bg-c: #7a38b6;
+
+            --text: #2a153d;
+            --link: #4a1c7a;
+
+            --card: rgba(255,255,255,0.90);
+            --card-border: rgba(120,60,190,0.25);
+            --card-shadow: rgba(52,10,88,0.35);
+
+            --accent: #a35cff;
+            --accent-2: #5b19b8;
+
+            --pill-bg: rgba(163,92,255,0.12);
+            --pill-border: rgba(163,92,255,0.22);
+
+            --wall-dash: rgba(110,40,190,0.30);
+
+            --note-bg: rgba(255, 250, 170, 0.92);
+            --note-border: rgba(160, 130, 20, 0.35);
+        }
+
+        html, body{
             margin:0;
+            padding:0;
             font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, #e8dcff 0%, #c7a6ff 50%, #7a38b6 100%);
+            color: var(--text);
+            background: radial-gradient(circle at top, var(--bg-a) 0%, var(--bg-b) 50%, var(--bg-c) 100%);
+        }
+
+        body{
             min-height:100vh;
             display:flex;
             justify-content:center;
             align-items:center;
             padding:30px;
-            color:#2a153d;
+            box-sizing:border-box;
         }
 
         .wrap{
@@ -25,11 +55,11 @@
         }
 
         .card{
-            background: rgba(255,255,255,0.90);
+            background: var(--card);
             border-radius: 18px;
             padding: 20px;
-            box-shadow: 0 12px 35px rgba(52,10,88,0.35);
-            border:1px solid rgba(120,60,190,0.25);
+            box-shadow: 0 12px 35px var(--card-shadow);
+            border:1px solid var(--card-border);
         }
 
         h2{ margin:0 0 10px 0; font-size:28px; }
@@ -51,12 +81,15 @@
             font-weight:800;
             font-size:13px;
             color:white;
-            background: linear-gradient(135deg, #a35cff, #6a22cc);
+            background: linear-gradient(135deg, var(--accent), #6a22cc);
             box-shadow: 0 10px 22px rgba(91,25,184,0.22);
             transition: filter 0.12s ease, transform 0.12s ease;
         }
         .bubble:hover{ filter:brightness(1.05); transform: translateY(-1px); }
-        .bubble.active{ outline: 3px solid rgba(255,255,255,0.65); box-shadow: inset 0 0 0 2px #4a1c7a; }
+        .bubble.active{
+            outline: 3px solid rgba(255,255,255,0.65);
+            box-shadow: inset 0 0 0 2px var(--link);
+        }
 
         .input-row{
             display:grid;
@@ -71,7 +104,7 @@
             min-height:52px;
             resize:vertical;
             border-radius:14px;
-            border:1px solid rgba(120,60,190,0.25);
+            border:1px solid var(--card-border);
             background: rgba(255,255,255,0.85);
             padding:12px;
             font-family: Arial, sans-serif;
@@ -79,6 +112,7 @@
             line-height:1.4;
             box-shadow: 0 10px 22px rgba(52,10,88,0.10);
             outline:none;
+            color: var(--text);
         }
         textarea:focus{
             border-color: rgba(163, 92, 255, 0.55);
@@ -91,7 +125,7 @@
             border-radius:999px;
             padding:10px 14px;
             font-weight:bold;
-            background: linear-gradient(135deg, #a35cff, #5b19b8);
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
             color:white;
             box-shadow: 0 10px 22px rgba(91,25,184,0.25);
             transition: filter 0.12s ease, transform 0.12s ease, opacity 0.12s ease;
@@ -101,8 +135,8 @@
 
         button.secondary{
             background: rgba(255,255,255,0.90);
-            color:#4a1c7a;
-            border:1px solid rgba(120,60,190,0.25);
+            color: var(--link);
+            border:1px solid var(--card-border);
             box-shadow: 0 10px 22px rgba(91,25,184,0.12);
         }
 
@@ -113,19 +147,53 @@
             filter:none;
         }
 
-        /* --- WAND: SIGNIFIERS GEGEN HIDDEN AFFORDANCE --- */
+        /* --- STATUS / PILLS --- */
+        .status-row{
+            margin-top:10px;
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+            font-size:13px;
+            opacity:0.9;
+        }
+        .pill{
+            background: var(--pill-bg);
+            border:1px solid var(--pill-border);
+            padding:6px 10px;
+            border-radius:999px;
+        }
+        .typing{ display:none; }
+        .typing.on{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+        }
+        .dots{ display:inline-flex; gap:3px; }
+        .dot{
+            width:6px; height:6px;
+            border-radius:50%;
+            background: rgba(74,28,122,0.65);
+            animation: blink 1s infinite ease-in-out;
+        }
+        .dot:nth-child(2){ animation-delay: 0.15s; }
+        .dot:nth-child(3){ animation-delay: 0.30s; }
+        @keyframes blink{
+            0%, 100% { transform: translateY(0); opacity:0.45; }
+            50% { transform: translateY(-2px); opacity:1; }
+        }
+
+        /* --- WAND --- */
         .wall{
             margin-top:14px;
             height:540px;
             border-radius:16px;
-            border:2px dashed rgba(110,40,190,0.30);
+            border:2px dashed var(--wall-dash);
 
-            /* leichte Textur/Leinwand + Tiefe (Signifier) */
             background:
                     radial-gradient(circle at 20% 20%, rgba(255,255,255,0.92), rgba(255,255,255,0.65)),
                     repeating-linear-gradient(45deg, rgba(120,60,190,0.05) 0 6px, rgba(255,255,255,0.00) 6px 12px);
 
-            /* inset shadow = "Pinnwand/Leinwand" */
             box-shadow:
                     inset 0 0 0 2px rgba(163,92,255,0.10),
                     inset 0 18px 35px rgba(52,10,88,0.10),
@@ -136,12 +204,10 @@
             padding:12px;
             box-sizing:border-box;
 
-            /* Standard: normaler Cursor. Platzieren-Modus setzt Cursor per JS */
             cursor: default;
-            transition: box-shadow 0.12s ease, transform 0.12s ease, outline-color 0.12s ease;
+            transition: box-shadow 0.12s ease, outline-color 0.12s ease;
         }
 
-        /* Hover-Signifier: zeigt Interaktion an */
         .wall:hover{
             box-shadow:
                     inset 0 0 0 2px rgba(163,92,255,0.20),
@@ -149,7 +215,6 @@
                     0 16px 34px rgba(52,10,88,0.16);
         }
 
-        /* Platzieren-Modus: klare visuelle Pragmatik */
         .wall.armed{
             outline: 3px solid rgba(163,92,255,0.45);
             outline-offset: 2px;
@@ -158,8 +223,8 @@
         .postit{
             position:absolute;
             width: 240px;
-            background: rgba(255, 250, 170, 0.92);
-            border:1px solid rgba(160, 130, 20, 0.35);
+            background: var(--note-bg);
+            border:1px solid var(--note-border);
             border-radius:12px;
             padding:10px;
             box-shadow: 0 10px 22px rgba(52,10,88,0.18);
@@ -173,6 +238,7 @@
         .postit b{
             display:block;
             margin-bottom:6px;
+            color: #000;
         }
 
         .hint{
@@ -192,49 +258,7 @@
         a.link{
             text-decoration:none;
             font-weight:bold;
-            color:#4a1c7a;
-        }
-
-        /* Tool-Status / “KI tippt…” */
-        .status-row{
-            margin-top:10px;
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-            align-items:center;
-            font-size:13px;
-            opacity:0.9;
-        }
-        .pill{
-            background: rgba(163,92,255,0.12);
-            border:1px solid rgba(163,92,255,0.22);
-            padding:6px 10px;
-            border-radius:999px;
-        }
-        .typing{
-            display:none;
-        }
-        .typing.on{
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-        }
-        .dots{
-            display:inline-flex;
-            gap:3px;
-        }
-        .dot{
-            width:6px; height:6px;
-            border-radius:50%;
-            background: rgba(74,28,122,0.65);
-            animation: blink 1s infinite ease-in-out;
-        }
-        .dot:nth-child(2){ animation-delay: 0.15s; }
-        .dot:nth-child(3){ animation-delay: 0.30s; }
-
-        @keyframes blink{
-            0%, 100% { transform: translateY(0); opacity:0.45; }
-            50% { transform: translateY(-2px); opacity:1; }
+            color: var(--link);
         }
 
         @media (max-width: 900px){
@@ -259,12 +283,10 @@
         <div class="input-row">
             <textarea id="textInput" placeholder="Tippe hier deine Idee..."></textarea>
 
-            <!-- Tool-Zustand statt "Anleitung im Buttontext": Button wird toggle-aktiv -->
             <button class="action" id="placeMode" type="button" aria-pressed="false" title="Aktiviert den Platzieren-Modus">
                 📌 Platzieren
             </button>
 
-            <!-- Inverse Operation (Undo) -->
             <button class="action secondary" id="undo" type="button" disabled title="Macht den letzten Schritt rückgängig">
                 ↩️ Rückgängig
             </button>
@@ -278,11 +300,11 @@
             <span class="pill" id="modePill">Modus: Normal</span>
             <span class="pill" id="countPill">Notizen: 0</span>
             <span class="pill typing" id="typingPill">
-                KI tippt
-                <span class="dots" aria-hidden="true">
-                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-                </span>
-            </span>
+          KI tippt
+          <span class="dots" aria-hidden="true">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </span>
+        </span>
         </div>
 
         <div class="wall" id="wall" aria-label="Erkenntnis-Wand" title="Hier werden Notizen platziert"></div>
@@ -297,366 +319,205 @@
                 🏠 Zurück zum Start
             </button>
         </div>
-
     </div>
+</div>
 
-    <script>
-        const bubbles = document.querySelectorAll(".bubble");
-        const textInput = document.getElementById("textInput");
-        const wall = document.getElementById("wall");
+<script>
+    const bubbles = document.querySelectorAll(".bubble");
+    const textInput = document.getElementById("textInput");
+    const wall = document.getElementById("wall");
 
-        const resetBtn = document.getElementById("reset");
-        const undoBtn  = document.getElementById("undo");
-        const placeBtn = document.getElementById("placeMode");
+    const resetBtn = document.getElementById("reset");
+    const undoBtn  = document.getElementById("undo");
+    const placeBtn = document.getElementById("placeMode");
 
-        const modePill  = document.getElementById("modePill");
-        const countPill = document.getElementById("countPill");
-        const typingPill = document.getElementById("typingPill");
+    const modePill  = document.getElementById("modePill");
+    const countPill = document.getElementById("countPill");
+    const typingPill = document.getElementById("typingPill");
 
-        let active = null;
-        let placeArmed = false;
+    let active = null;
+    let placeArmed = false;
 
-        // Undo-Stack (inverse Operation): speichert Funktionen, die den letzten Schritt rückgängig machen
-        const undoStack = [];
+    const undoStack = [];
 
-        function updateUI(){
-            const count = wall.querySelectorAll(".postit").length;
-            countPill.textContent = "Notizen: " + count;
+    function updateUI(){
+        const count = wall.querySelectorAll(".postit").length;
+        countPill.textContent = "Notizen: " + count;
+        undoBtn.disabled = undoStack.length === 0;
+        modePill.textContent = placeArmed ? "Modus: Platzieren aktiv" : "Modus: Normal";
+    }
 
-            undoBtn.disabled = undoStack.length === 0;
+    function setPlaceMode(on){
+        placeArmed = on;
+        wall.classList.toggle("armed", on);
+        wall.style.cursor = on ? "crosshair" : "default";
+        placeBtn.setAttribute("aria-pressed", String(on));
+        placeBtn.textContent = on ? "📌 Platzieren (aktiv)" : "📌 Platzieren";
+        updateUI();
+    }
 
-            if(placeArmed){
-                modePill.textContent = "Modus: Platzieren aktiv";
-            } else {
-                modePill.textContent = "Modus: Normal";
-            }
-        }
+    function showTyping(ms=450){
+        typingPill.classList.add("on");
+        return new Promise(res => setTimeout(() => {
+            typingPill.classList.remove("on");
+            res();
+        }, ms));
+    }
 
-        function setPlaceMode(on){
-            placeArmed = on;
-
-            // Pragmatik/Index: Cursor + Outline + Button-Zustand zeigen Moduswechsel
-            wall.classList.toggle("armed", on);
-            wall.style.cursor = on ? "crosshair" : "default";
-
-            // Tool-Zustand am Button statt Anleitung im Text
-            placeBtn.setAttribute("aria-pressed", String(on));
-            placeBtn.textContent = on ? "📌 Platzieren (aktiv)" : "📌 Platzieren";
-
-            updateUI();
-        }
-
-        function showTyping(ms=550){
-            typingPill.classList.add("on");
-            return new Promise(res => setTimeout(() => {
-                typingPill.classList.remove("on");
-                res();
-            }, ms));
-        }
-
-        // Bubble auswählen
-        bubbles.forEach(b => {
-            b.addEventListener("click", () => {
-                bubbles.forEach(x => x.classList.remove("active"));
-                b.classList.add("active");
-
-                active = {
-                    title: b.dataset.title,
-                    placeholder: b.dataset.placeholder
-                };
-
-                textInput.placeholder = active.placeholder;
-                textInput.focus();
-            });
+    bubbles.forEach(b => {
+        b.addEventListener("click", () => {
+            bubbles.forEach(x => x.classList.remove("active"));
+            b.classList.add("active");
+            active = { title: b.dataset.title, placeholder: b.dataset.placeholder };
+            textInput.placeholder = active.placeholder;
+            textInput.focus();
         });
+    });
 
-        // --- THERBLIGS: Vorselektion spart "Suchen & Auswählen" ---
-        const defaultBubble = document.querySelector('.bubble[data-title="Idee:"]');
-        if(defaultBubble) defaultBubble.click();
-        // ----------------------------------------------------------
+    const defaultBubble = document.querySelector('.bubble[data-title="Idee:"]');
+    if(defaultBubble) defaultBubble.click();
 
-        // Platziermodus togglen (kein "Anleitungstext", sondern Modus-Signal)
-        placeBtn.addEventListener("click", () => {
-            // Wenn aus -> an schalten, vorher Validierung
-            if(!placeArmed){
-                if (!active) {
-                    alert("Bitte wähle eine Kategorie (Bubble).");
-                    return;
-                }
-                if (!textInput.value.trim()) {
-                    alert("Bitte einen Text eingeben.");
-                    textInput.focus();
-                    return;
-                }
-                setPlaceMode(true);
-            } else {
-                setPlaceMode(false);
-            }
-        });
+    placeBtn.addEventListener("click", () => {
+        if(!placeArmed){
+            if (!active) return alert("Bitte wähle eine Kategorie (Bubble).");
+            if (!textInput.value.trim()) { alert("Bitte einen Text eingeben."); textInput.focus(); return; }
+            setPlaceMode(true);
+        } else {
+            setPlaceMode(false);
+        }
+    });
 
-        // In die Wand klicken -> Post-it setzen (nur wenn armed)
-        wall.addEventListener("click", async (e) => {
-            if (!placeArmed || !active) return;
+    wall.addEventListener("click", async (e) => {
+        if (!placeArmed || !active) return;
 
-            const txt = textInput.value.trim();
-            if (!txt) return;
+        const txt = textInput.value.trim();
+        if (!txt) return;
 
-            // Social Signifier: Mini "KI tippt..." (optional, wirkt lebendiger)
-            await showTyping(450);
+        await showTyping(450);
 
-            const rect = wall.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+        const rect = wall.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
-            const note = document.createElement("div");
-            note.className = "postit";
+        const note = document.createElement("div");
+        note.className = "postit";
 
-            const rot = (Math.random() * 10 - 5).toFixed(1) + "deg";
-            note.style.setProperty("--rot", rot);
+        const rot = (Math.random() * 10 - 5).toFixed(1) + "deg";
+        note.style.setProperty("--rot", rot);
 
-            // Position clamp
-            const w = 240;
-            const h = 130;
-            const left = Math.max(10, Math.min(x - w/2, rect.width - w - 10));
-            const top  = Math.max(10, Math.min(y - 30, rect.height - h - 10));
+        const w = 240;
+        const h = 130;
+        const left = Math.max(10, Math.min(x - w/2, rect.width - w - 10));
+        const top  = Math.max(10, Math.min(y - 30, rect.height - h - 10));
 
-            note.style.left = left + "px";
-            note.style.top  = top + "px";
+        note.style.left = left + "px";
+        note.style.top  = top + "px";
+        note.innerHTML = "<b>" + active.title + "</b>" + escapeHtml(txt);
 
-            note.innerHTML = "<b>" + active.title + "</b>" + escapeHtml(txt);
+        // Löschen (reversibel)
+        note.addEventListener("click", (ev) => {
+            ev.stopPropagation();
 
-            // Klick auf Notiz = löschen (aber reversible via Undo)
-            note.addEventListener("click", (ev) => {
-                ev.stopPropagation();
+            const snap = {
+                left: note.style.left,
+                top: note.style.top,
+                rot: note.style.getPropertyValue("--rot"),
+                html: note.innerHTML
+            };
 
-                const parent = note.parentNode;
-                if(!parent) return;
+            note.remove();
 
-                const snapshot = {
-                    node: note,
-                    left: note.style.left,
-                    top: note.style.top,
-                    rot: note.style.getPropertyValue("--rot"),
-                    html: note.innerHTML
-                };
+            undoStack.push(() => {
+                const restored = document.createElement("div");
+                restored.className = "postit";
+                restored.style.left = snap.left;
+                restored.style.top = snap.top;
+                restored.style.setProperty("--rot", snap.rot);
+                restored.innerHTML = snap.html;
 
-                note.remove();
-
-                // Undo: Notiz wiederherstellen
-                undoStack.push(() => {
-                    const restored = document.createElement("div");
-                    restored.className = "postit";
-                    restored.style.left = snapshot.left;
-                    restored.style.top  = snapshot.top;
-                    restored.style.setProperty("--rot", snapshot.rot);
-                    restored.innerHTML = snapshot.html;
-
-                    restored.addEventListener("click", (ev2) => {
-                        ev2.stopPropagation();
-                        restored.dispatchEvent(new Event("removeMe"));
-                    });
-
-                    // Trick: Wir wollen die gleiche Logik wie oben nutzen -> custom event
-                    restored.addEventListener("removeMe", () => {
-                        // beim Entfernen wieder Undo erzeugen (rekursiv sauber)
-                        const parent2 = restored.parentNode;
-                        if(!parent2) return;
-
-                        const snap2 = {
-                            node: restored,
-                            left: restored.style.left,
-                            top: restored.style.top,
-                            rot: restored.style.getPropertyValue("--rot"),
-                            html: restored.innerHTML
-                        };
-
-                        restored.remove();
-                        undoStack.push(() => {
-                            const r2 = document.createElement("div");
-                            r2.className = "postit";
-                            r2.style.left = snap2.left;
-                            r2.style.top  = snap2.top;
-                            r2.style.setProperty("--rot", snap2.rot);
-                            r2.innerHTML = snap2.html;
-
-                            r2.addEventListener("click", (ev3) => {
-                                ev3.stopPropagation();
-                                r2.dispatchEvent(new Event("removeMe"));
-                            });
-
-                            wall.appendChild(r2);
-                            updateUI();
-                        });
-
-                        updateUI();
-                    });
-
-                    wall.appendChild(restored);
+                // wieder gleiche Löschlogik
+                restored.addEventListener("click", (ev2) => {
+                    ev2.stopPropagation();
+                    restored.remove();
+                    undoStack.push(() => { wall.appendChild(restored); updateUI(); });
                     updateUI();
                 });
 
+                wall.appendChild(restored);
                 updateUI();
             });
-
-            // Undo für "Platzieren" = letzte Note entfernen
-            undoStack.push(() => {
-                if(note.parentNode) note.remove();
-                updateUI();
-            });
-
-            wall.appendChild(note);
-
-            // Nach dem Platzieren: Modus aus + Input leeren
-            setPlaceMode(false);
-            textInput.value = "";
-            textInput.focus();
 
             updateUI();
         });
 
-        // Undo Button
-        undoBtn.addEventListener("click", () => {
-            const action = undoStack.pop();
-            if(action) action();
+        // Undo für "Platzieren": Note wieder entfernen
+        undoStack.push(() => {
+            if(note.parentNode) note.remove();
             updateUI();
         });
 
-        // Reset (wand leeren) — bleibt, aber ist reversibel: wir legen Snapshot in Undo
-        resetBtn.addEventListener("click", () => {
-            const notes = Array.from(wall.querySelectorAll(".postit"));
-            if(notes.length === 0) return;
+        wall.appendChild(note);
 
-            const snapshot = notes.map(n => ({
-                left: n.style.left,
-                top: n.style.top,
-                rot: n.style.getPropertyValue("--rot"),
-                html: n.innerHTML
-            }));
-
-            // Undo: Snapshot wiederherstellen
-            undoStack.push(() => {
-                snapshot.forEach(s => {
-                    const restored = document.createElement("div");
-                    restored.className = "postit";
-                    restored.style.left = s.left;
-                    restored.style.top = s.top;
-                    restored.style.setProperty("--rot", s.rot);
-                    restored.innerHTML = s.html;
-
-                    restored.addEventListener("click", (ev) => {
-                        ev.stopPropagation();
-                        // Entfernen als eigener Schritt (mit Undo)
-                        const snap2 = {
-                            left: restored.style.left,
-                            top: restored.style.top,
-                            rot: restored.style.getPropertyValue("--rot"),
-                            html: restored.innerHTML
-                        };
-                        restored.remove();
-                        undoStack.push(() => {
-                            const r2 = document.createElement("div");
-                            r2.className = "postit";
-                            r2.style.left = snap2.left;
-                            r2.style.top = snap2.top;
-                            r2.style.setProperty("--rot", snap2.rot);
-                            r2.innerHTML = snap2.html;
-
-                            r2.addEventListener("click", (ev2) => {
-                                ev2.stopPropagation();
-                                r2.dispatchEvent(new Event("removeMe"));
-                            });
-                            r2.addEventListener("removeMe", () => {
-                                const snap3 = {
-                                    left: r2.style.left,
-                                    top: r2.style.top,
-                                    rot: r2.style.getPropertyValue("--rot"),
-                                    html: r2.innerHTML
-                                };
-                                r2.remove();
-                                undoStack.push(() => {
-                                    const r3 = document.createElement("div");
-                                    r3.className = "postit";
-                                    r3.style.left = snap3.left;
-                                    r3.style.top = snap3.top;
-                                    r3.style.setProperty("--rot", snap3.rot);
-                                    r3.innerHTML = snap3.html;
-                                    r3.addEventListener("click", (ev3) => {
-                                        ev3.stopPropagation();
-                                        r3.dispatchEvent(new Event("removeMe"));
-                                    });
-                                    wall.appendChild(r3);
-                                    updateUI();
-                                });
-                                updateUI();
-                            });
-
-                            wall.appendChild(r2);
-                            updateUI();
-                        });
-                        updateUI();
-                    });
-
-                    restored.addEventListener("removeMe", () => {
-                        const snapX = {
-                            left: restored.style.left,
-                            top: restored.style.top,
-                            rot: restored.style.getPropertyValue("--rot"),
-                            html: restored.innerHTML
-                        };
-                        restored.remove();
-                        undoStack.push(() => {
-                            const rX = document.createElement("div");
-                            rX.className = "postit";
-                            rX.style.left = snapX.left;
-                            rX.style.top = snapX.top;
-                            rX.style.setProperty("--rot", snapX.rot);
-                            rX.innerHTML = snapX.html;
-                            rX.addEventListener("click", (evX) => {
-                                evX.stopPropagation();
-                                rX.dispatchEvent(new Event("removeMe"));
-                            });
-                            wall.appendChild(rX);
-                            updateUI();
-                        });
-                        updateUI();
-                    });
-
-                    wall.appendChild(restored);
-                });
-
-                updateUI();
-            });
-
-            wall.innerHTML = "";
-            textInput.value = "";
-            setPlaceMode(false);
-
-            // Reset Auswahl auf Default
-            if(defaultBubble) defaultBubble.click();
-
-            updateUI();
-        });
-
-        // ESC = Platziermodus abbrechen (Pragmatik)
-        document.addEventListener("keydown", (e) => {
-            if(e.key === "Escape" && placeArmed){
-                setPlaceMode(false);
-            }
-        });
-
-        function escapeHtml(str){
-            return str
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;")
-                .replaceAll("'", "&#039;")
-                .replaceAll("\n", "<br>");
-        }
-
-        // Initial
         setPlaceMode(false);
+        textInput.value = "";
+        textInput.focus();
         updateUI();
-    </script>
+    });
+
+    undoBtn.addEventListener("click", () => {
+        const action = undoStack.pop();
+        if(action) action();
+        updateUI();
+    });
+
+    resetBtn.addEventListener("click", () => {
+        const notes = Array.from(wall.querySelectorAll(".postit"));
+        if(notes.length === 0) return;
+
+        const snapshot = notes.map(n => ({
+            left: n.style.left,
+            top: n.style.top,
+            rot: n.style.getPropertyValue("--rot"),
+            html: n.innerHTML
+        }));
+
+        undoStack.push(() => {
+            snapshot.forEach(s => {
+                const restored = document.createElement("div");
+                restored.className = "postit";
+                restored.style.left = s.left;
+                restored.style.top = s.top;
+                restored.style.setProperty("--rot", s.rot);
+                restored.innerHTML = s.html;
+                restored.addEventListener("click", (ev) => { ev.stopPropagation(); restored.remove(); updateUI(); });
+                wall.appendChild(restored);
+            });
+            updateUI();
+        });
+
+        wall.innerHTML = "";
+        textInput.value = "";
+        setPlaceMode(false);
+        if(defaultBubble) defaultBubble.click();
+        updateUI();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if(e.key === "Escape" && placeArmed) setPlaceMode(false);
+    });
+
+    function escapeHtml(str){
+        return str
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;")
+            .replaceAll("\n", "<br>");
+    }
+
+    setPlaceMode(false);
+    updateUI();
+</script>
 </body>
 </html>
