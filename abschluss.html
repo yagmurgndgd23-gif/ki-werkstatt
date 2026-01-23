@@ -7,36 +7,46 @@
 
     <style>
         :root{
-            /* === YARA-FARBPALETTE (wie deine Station 3 Seiten) === */
-            --bg-a: #e8dcff;
-            --bg-b: #c7a6ff;
-            --bg-c: #7a38b6;
+            /* === DARK BACKGROUND === */
+            --bg0:#0e0f12;
+            --bg1:#15171c;
 
-            --text: #2a153d;
-            --link: #4a1c7a;
+            /* === WHITE CARD LOOK === */
+            --card:#ffffff;
+            --card2:#f7f7f9;
+            --stroke:rgba(0,0,0,0.12);
+            --shadow:0 14px 40px rgba(0,0,0,0.35);
 
-            --card: rgba(255,255,255,0.90);
-            --card-border: rgba(120,60,190,0.25);
-            --card-shadow: rgba(52,10,88,0.35);
+            /* Text */
+            --ink:#0f1115;
+            --muted:#4b5563;
+            --link:#4a1c7a;
 
-            --accent: #a35cff;
-            --accent-2: #5b19b8;
+            /* Accent (violett) */
+            --accent1:#7c3aed;
+            --accent2:#a855f7;
 
-            --pill-bg: rgba(163,92,255,0.12);
-            --pill-border: rgba(163,92,255,0.22);
+            /* Pills */
+            --pill-bg:rgba(124,58,237,0.10);
+            --pill-border:rgba(124,58,237,0.22);
 
-            --wall-dash: rgba(110,40,190,0.30);
+            /* Wall */
+            --wall-dash:rgba(0,0,0,0.18);
 
-            --note-bg: rgba(255, 250, 170, 0.92);
-            --note-border: rgba(160, 130, 20, 0.35);
+            /* Notes */
+            --note-bg:rgba(255, 250, 170, 0.92);
+            --note-border:rgba(160, 130, 20, 0.35);
         }
+
+        *{ box-sizing:border-box; }
 
         html, body{
             margin:0;
             padding:0;
             font-family: Arial, sans-serif;
-            color: var(--text);
-            background: radial-gradient(circle at top, var(--bg-a) 0%, var(--bg-b) 50%, var(--bg-c) 100%);
+            background:
+                    radial-gradient(circle at top, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 55%),
+                    linear-gradient(180deg, var(--bg0), var(--bg1));
         }
 
         body{
@@ -44,26 +54,34 @@
             display:flex;
             justify-content:center;
             align-items:center;
-            padding:30px;
-            box-sizing:border-box;
+            padding:26px;
         }
 
         .wrap{
             width:min(1100px, 95vw);
             display:grid;
-            gap:16px;
+            gap:14px;
         }
 
         .card{
-            background: var(--card);
-            border-radius: 18px;
-            padding: 20px;
-            box-shadow: 0 12px 35px var(--card-shadow);
-            border:1px solid var(--card-border);
+            background: rgba(255,255,255,0.95);
+            border-radius:18px;
+            padding:20px;
+            box-shadow: var(--shadow);
+            border:1px solid rgba(255,255,255,0.10);
+            backdrop-filter: blur(8px);
         }
 
-        h2{ margin:0 0 10px 0; font-size:28px; }
-        p{ margin:0; line-height:1.6; }
+        h2{
+            margin:0 0 10px 0;
+            font-size:28px;
+            color:var(--ink);
+        }
+        p{
+            margin:0;
+            line-height:1.6;
+            color:var(--muted);
+        }
 
         .bubble-row{
             display:flex;
@@ -81,14 +99,14 @@
             font-weight:800;
             font-size:13px;
             color:white;
-            background: linear-gradient(135deg, var(--accent), #6a22cc);
-            box-shadow: 0 10px 22px rgba(91,25,184,0.22);
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
             transition: filter 0.12s ease, transform 0.12s ease;
         }
         .bubble:hover{ filter:brightness(1.05); transform: translateY(-1px); }
         .bubble.active{
-            outline: 3px solid rgba(255,255,255,0.65);
-            box-shadow: inset 0 0 0 2px var(--link);
+            outline: 3px solid rgba(0,0,0,0.10);
+            box-shadow: inset 0 0 0 2px rgba(124,58,237,0.25);
         }
 
         .input-row{
@@ -104,19 +122,19 @@
             min-height:52px;
             resize:vertical;
             border-radius:14px;
-            border:1px solid var(--card-border);
-            background: rgba(255,255,255,0.85);
+            border:1px solid rgba(0,0,0,0.14);
+            background: rgba(255,255,255,0.96);
             padding:12px;
             font-family: Arial, sans-serif;
             font-size:14px;
             line-height:1.4;
-            box-shadow: 0 10px 22px rgba(52,10,88,0.10);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
             outline:none;
-            color: var(--text);
+            color:var(--ink);
         }
         textarea:focus{
-            border-color: rgba(163, 92, 255, 0.55);
-            box-shadow: 0 10px 22px rgba(91,25,184,0.16);
+            border-color: rgba(124,58,237,0.50);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.14);
         }
 
         button.action{
@@ -124,20 +142,20 @@
             cursor:pointer;
             border-radius:999px;
             padding:10px 14px;
-            font-weight:bold;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            font-weight:900;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
             color:white;
-            box-shadow: 0 10px 22px rgba(91,25,184,0.25);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
             transition: filter 0.12s ease, transform 0.12s ease, opacity 0.12s ease;
             white-space:nowrap;
         }
         button.action:hover{ filter:brightness(1.05); transform: translateY(-1px); }
 
         button.secondary{
-            background: rgba(255,255,255,0.90);
-            color: var(--link);
-            border:1px solid var(--card-border);
-            box-shadow: 0 10px 22px rgba(91,25,184,0.12);
+            background: rgba(255,255,255,0.96);
+            color:#111827;
+            border:1px solid rgba(0,0,0,0.14);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
         }
 
         button.action:disabled{
@@ -147,7 +165,6 @@
             filter:none;
         }
 
-        /* --- STATUS / PILLS --- */
         .status-row{
             margin-top:10px;
             display:flex;
@@ -155,14 +172,17 @@
             flex-wrap:wrap;
             align-items:center;
             font-size:13px;
-            opacity:0.9;
+            opacity:0.95;
+            color:var(--muted);
         }
         .pill{
             background: var(--pill-bg);
             border:1px solid var(--pill-border);
             padding:6px 10px;
             border-radius:999px;
+            color:#111827;
         }
+
         .typing{ display:none; }
         .typing.on{
             display:inline-flex;
@@ -173,7 +193,7 @@
         .dot{
             width:6px; height:6px;
             border-radius:50%;
-            background: rgba(74,28,122,0.65);
+            background: rgba(17,24,39,0.55);
             animation: blink 1s infinite ease-in-out;
         }
         .dot:nth-child(2){ animation-delay: 0.15s; }
@@ -183,7 +203,7 @@
             50% { transform: translateY(-2px); opacity:1; }
         }
 
-        /* --- WAND --- */
+        /* --- WALL --- */
         .wall{
             margin-top:14px;
             height:540px;
@@ -191,60 +211,53 @@
             border:2px dashed var(--wall-dash);
 
             background:
-                    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.92), rgba(255,255,255,0.65)),
-                    repeating-linear-gradient(45deg, rgba(120,60,190,0.05) 0 6px, rgba(255,255,255,0.00) 6px 12px);
+                    radial-gradient(circle at 20% 20%, rgba(0,0,0,0.02), rgba(255,255,255,0.00)),
+                    repeating-linear-gradient(45deg, rgba(0,0,0,0.04), rgba(0,0,0,0.04) 10px, rgba(255,255,255,0.00) 10px, rgba(255,255,255,0.00) 20px);
 
             box-shadow:
-                    inset 0 0 0 2px rgba(163,92,255,0.10),
-                    inset 0 18px 35px rgba(52,10,88,0.10),
-                    0 12px 28px rgba(52,10,88,0.10);
+                    inset 0 0 0 1px rgba(0,0,0,0.10),
+                    0 12px 28px rgba(0,0,0,0.10);
 
             position:relative;
             overflow:hidden;
             padding:12px;
-            box-sizing:border-box;
-
             cursor: default;
-            transition: box-shadow 0.12s ease, outline-color 0.12s ease;
+            transition: box-shadow 0.12s ease, outline-color 0.12s ease, transform .12s ease;
         }
-
         .wall:hover{
             box-shadow:
-                    inset 0 0 0 2px rgba(163,92,255,0.20),
-                    inset 0 18px 35px rgba(52,10,88,0.10),
-                    0 16px 34px rgba(52,10,88,0.16);
+                    inset 0 0 0 2px rgba(0,0,0,0.12),
+                    0 16px 34px rgba(0,0,0,0.14);
+            transform: translateY(-1px);
         }
 
         .wall.armed{
-            outline: 3px solid rgba(163,92,255,0.45);
+            outline: 3px solid rgba(124,58,237,0.35);
             outline-offset: 2px;
         }
 
         .postit{
             position:absolute;
-            width: 240px;
+            width:240px;
             background: var(--note-bg);
             border:1px solid var(--note-border);
             border-radius:12px;
             padding:10px;
-            box-shadow: 0 10px 22px rgba(52,10,88,0.18);
+            box-shadow: 0 10px 22px rgba(0,0,0,0.18);
             transform: rotate(var(--rot));
             cursor:pointer;
             user-select:none;
             transition: transform 0.1s;
+            color:#111;
         }
         .postit:hover{ transform: scale(1.05) rotate(0deg); z-index:100; }
-
-        .postit b{
-            display:block;
-            margin-bottom:6px;
-            color: #000;
-        }
+        .postit b{ display:block; margin-bottom:6px; color:#000; }
 
         .hint{
             margin-top:10px;
             font-size:13px;
-            opacity:0.85;
+            opacity:0.9;
+            color:var(--muted);
         }
 
         .links{
@@ -254,12 +267,12 @@
             flex-wrap:wrap;
             align-items:center;
         }
-
         a.link{
             text-decoration:none;
             font-weight:bold;
-            color: var(--link);
+            color:var(--link);
         }
+        a.link:hover{ text-decoration: underline; }
 
         @media (max-width: 900px){
             .input-row{ grid-template-columns: 1fr; }
@@ -300,11 +313,11 @@
             <span class="pill" id="modePill">Modus: Normal</span>
             <span class="pill" id="countPill">Notizen: 0</span>
             <span class="pill typing" id="typingPill">
-          KI tippt
-          <span class="dots" aria-hidden="true">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          </span>
-        </span>
+                KI tippt
+                <span class="dots" aria-hidden="true">
+                    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                </span>
+            </span>
         </div>
 
         <div class="wall" id="wall" aria-label="Erkenntnis-Wand" title="Hier werden Notizen platziert"></div>
@@ -414,7 +427,6 @@
         note.style.top  = top + "px";
         note.innerHTML = "<b>" + active.title + "</b>" + escapeHtml(txt);
 
-        // Löschen (reversibel)
         note.addEventListener("click", (ev) => {
             ev.stopPropagation();
 
@@ -435,7 +447,6 @@
                 restored.style.setProperty("--rot", snap.rot);
                 restored.innerHTML = snap.html;
 
-                // wieder gleiche Löschlogik
                 restored.addEventListener("click", (ev2) => {
                     ev2.stopPropagation();
                     restored.remove();
@@ -450,7 +461,6 @@
             updateUI();
         });
 
-        // Undo für "Platzieren": Note wieder entfernen
         undoStack.push(() => {
             if(note.parentNode) note.remove();
             updateUI();

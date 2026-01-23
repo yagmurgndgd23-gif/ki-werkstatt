@@ -6,64 +6,115 @@
     <title>Station 1 – Lila</title>
     <style>
         :root{
-            --bg0:#0e0f12; --bg1:#15171c;
-            --card:rgba(255,255,255,0.95);
-            --stroke:rgba(255,255,255,0.10);
-            --shadow:0 14px 40px rgba(0,0,0,0.35);
-            --ink:#0f1115; --muted:#3b3f48;
+            /* Lila Look (hell, magisch) */
+            --bgA:#f3ecff;         /* sehr helles Flieder */
+            --bgB:#dcc8ff;         /* soft lila */
+            --bgC:#a779ff;         /* tieferes lila */
+            --ink:#2a153d;
+            --muted:#4b2a67;
 
-            --accent1:#7c3aed; --accent2:#a855f7;
+            --card:rgba(255,255,255,0.92);
+            --stroke:rgba(120,60,190,0.22);
+            --shadow:0 14px 40px rgba(52,10,88,0.28);
+
+            --accent1:#a35cff;
+            --accent2:#6a22cc;
+            --accentSoft:rgba(163,92,255,0.14);
         }
 
         body{
-            margin:0; font-family: Arial, sans-serif;
+            margin:0;
+            font-family: Arial, sans-serif;
             background:
-                    radial-gradient(circle at top, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 55%),
-                    linear-gradient(180deg, var(--bg0), var(--bg1));
-            min-height:100vh; display:flex; justify-content:center; align-items:center;
-            padding:30px; color:var(--ink); box-sizing:border-box;
+                    radial-gradient(circle at top, var(--bgA) 0%, var(--bgB) 48%, var(--bgC) 100%);
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:30px;
+            color:var(--ink);
+            box-sizing:border-box;
         }
+
         .wrap{ width:min(1100px, 95vw); display:grid; gap:16px; }
+
         .card{
             background: var(--card);
-            border-radius: 18px; padding: 22px;
+            border-radius: 18px;
+            padding: 22px;
             box-shadow: var(--shadow);
             border:1px solid var(--stroke);
             backdrop-filter: blur(6px);
         }
 
-        .nav{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
-        .navleft{ display:flex; gap:8px; flex-wrap:wrap; }
+        .nav{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            align-items:center;
+            justify-content:flex-start;
+        }
 
         .pill{
-            padding:8px 12px; border-radius:999px; text-decoration:none;
-            font-weight:bold; font-size:13px;
-            background: rgba(255,255,255,0.92);
-            color:#111827; border:1px solid rgba(0,0,0,0.14);
-            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+            padding:8px 12px;
+            border-radius:999px;
+            text-decoration:none;
+            font-weight:bold;
+            font-size:13px;
+            background: rgba(255,255,255,0.85);
+            color:#4a1c7a;
+            border:1px solid rgba(120,60,190,0.18);
+            box-shadow: 0 10px 22px rgba(52,10,88,0.10);
+            transition: transform .12s ease, filter .12s ease;
         }
+        .pill:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+
         .pill.active{
             background: linear-gradient(135deg, var(--accent1), var(--accent2));
-            color:white; border-color: rgba(255,255,255,0.20);
+            color:white;
+            border-color: rgba(255,255,255,0.20);
+            box-shadow: 0 12px 26px rgba(91,25,184,0.22);
         }
 
-        h1{ margin:12px 0 10px 0; color:#0b0d12; }
+        h1{ margin:12px 0 10px 0; color:var(--ink); }
         p{ margin:10px 0; line-height:1.6; color:var(--muted); }
 
-        .row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+        .row{
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+            margin-top:14px;
+        }
+
         a.btn{
-            padding: 12px 18px; border-radius:14px; text-decoration:none;
-            color:white; font-weight:bold;
+            padding: 12px 18px;
+            border-radius:14px;
+            text-decoration:none;
+            color:white;
+            font-weight:bold;
             background: linear-gradient(135deg, var(--accent1), var(--accent2));
-            box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+            box-shadow: 0 10px 22px rgba(91,25,184,0.28);
             display:inline-block;
             transition: filter .12s ease, transform .12s ease;
         }
-        a.btn:hover{ filter:brightness(1.04); transform: translateY(-1px); }
+        a.btn:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+
         a.btn.secondary{
             background: rgba(255,255,255,0.92);
-            color:#111827; border:1px solid rgba(0,0,0,0.14);
-            box-shadow: 0 10px 22px rgba(0,0,0,0.10);
+            color:#4a1c7a;
+            border:1px solid rgba(120,60,190,0.22);
+            box-shadow: 0 10px 22px rgba(91,25,184,0.12);
+        }
+
+        /* kleiner “Glanz” oben */
+        .card::before{
+            content:"";
+            display:block;
+            height:10px;
+            margin:-22px -22px 14px -22px;
+            border-radius:18px 18px 0 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.00), rgba(255,255,255,0.55), rgba(255,255,255,0.00));
+            opacity:0.65;
         }
     </style>
 </head>
@@ -71,13 +122,11 @@
 <div class="wrap">
     <div class="card">
         <div class="nav">
-            <div class="navleft">
-                <a class="pill" href="index.html">🏠 Eingang</a>
-                <a class="pill active" href="lila.html">🎨 Lila</a>
-                <a class="pill" href="mateo.html">⚠️ Mateo</a>
-                <a class="pill" href="yara.html">📚 Yara</a>
-                <a class="pill" href="abschluss.html">⭐ Abschluss</a>
-            </div>
+            <a class="pill" href="index.html">🏠 Eingang</a>
+            <a class="pill active" href="lila.html">🎨 Lila</a>
+            <a class="pill" href="mateo.html">⚠️ Mateo</a>
+            <a class="pill" href="yara.html">📚 Yara</a>
+            <a class="pill" href="abschluss.html">⭐ Abschluss</a>
         </div>
 
         <h1>🎨 Station 1 – Lilas Kreativlabor</h1>
