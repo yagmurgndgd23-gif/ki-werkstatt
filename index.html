@@ -121,6 +121,22 @@
             box-shadow: 0 10px 22px rgba(0,0,0,0.10);
         }
 
+        /* Details schöner machen */
+        details{
+            position:relative;
+            z-index:2;
+            margin-top:-2px;
+        }
+        summary{
+            cursor:pointer;
+            font-size:13px;
+            color:var(--muted);
+            font-weight:800;
+        }
+        details[open] summary{
+            color:#111827;
+        }
+
         @media (max-width: 1000px){
             .grid{ grid-template-columns: repeat(2, 1fr); }
         }
@@ -140,24 +156,54 @@
 
     <div class="card">
         <div class="grid">
+            <!-- Station 1 -->
             <div class="tile accent-lila">
                 <h2>🎨 Station 1 – Lilas Kreativlabor</h2>
-                <p>Kreativität vs. KI: Was wirkt einzigartig menschlich?</p>
+
+                <details>
+                    <summary>Beschreibung & Aufgabe anzeigen</summary>
+                    <p style="margin-top:10px;">
+                        <b>Beschreibung:</b> Lila ist Kunststudentin. KI verunsichert sie. Sie fürchtet, ihre eigene Handschrift zu verlieren und als Künstlerin ersetzt zu werden.
+                        <br><b>Aufgabe:</b> An der Tafel hängen Texte und Zeichnungen. Markiere welche Stellen für dich menschlich einzigartig oder KI-generiert wirken.
+                    </p>
+                </details>
+
                 <a class="btn btn-lila" href="lila.html">Station 1 öffnen →</a>
             </div>
 
+            <!-- Station 2 -->
             <div class="tile accent-mateo">
                 <h2>⚠️ Station 2 – Mateos Manipulationslabyrinth</h2>
-                <p>Echt, KI oder manipulativ? Lerne Tricks zu erkennen.</p>
+
+                <details>
+                    <summary>Beschreibung & Aufgabe anzeigen</summary>
+                    <p style="margin-top:10px;">
+                        <b>Beschreibung:</b> Mateo ist 15 und online ständig mit KI-Influencern konfrontiert. Er ist unsicher wie gut er zwischen menschlichen und KI-Influencern unterscheiden kann und wie KI-Influencer ihn beeinflussen können.
+                        <br><b>Aufgabe:</b> Schau dir die Szenen (Chats, Bilder, Posts) an und ordne sie den Kategorien zu: Echt? KI-generiert? Manipulativ? Neutral?
+                        <br><b>Frage:</b> Wie könnte Mateo KI-generierten und menschliche Content in Zukunft besser voneinander unterscheiden?
+                    </p>
+                </details>
+
                 <a class="btn btn-mateo" href="mateo.html">Station 2 öffnen →</a>
             </div>
 
+            <!-- Station 3 -->
             <div class="tile accent-yara">
                 <h2>📚 Station 3 – Yaras Klassenchaos</h2>
-                <p>KI-Texte erkennen und faire Regeln entwickeln.</p>
+
+                <details>
+                    <summary>Beschreibung & Aufgabe anzeigen</summary>
+                    <p style="margin-top:10px;">
+                        <b>Beschreibung:</b> Yara ist Lehrerin. Ihre Schüler nutzen KI manchmal fair, manchmal zum Schummeln. Sie möchte KI nicht generell verbieten, sondern wünscht sich klare Regeln.
+                        <br><b>Aufgabe:</b> Markiere im Text für dich typische Hinweise auf KI (Wiederholungen, perfekte Grammatik, Bindestriche).
+                        <br><b>Fragestellung:</b> Wie könnte die Klasse KI sinnvoll & fair nutzen?
+                    </p>
+                </details>
+
                 <a class="btn btn-yara" href="yara.html">Station 3 öffnen →</a>
             </div>
 
+            <!-- Abschluss -->
             <div class="tile accent-neutral">
                 <h2>⭐ Wand der Erkenntnisse</h2>
                 <p>Dein Lernmoment + Regel + Idee an die Wand pinnen.</p>
